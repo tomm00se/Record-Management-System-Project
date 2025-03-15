@@ -95,6 +95,19 @@ class RecordManager:
         self.records[record_type].extend(new_records)
         self.save_records()
         
+    def update_record(self, record_type: str, record_id: int, updated_record: Dict[str, Any]) -> None:
+        """Update a record by ID."""
+        if record_type not in self.RECORD_TYPES:
+            raise ValueError(f"Record type '{record_type}' is not supported.")
+        
+        for i, record in enumerate(self.records[record_type]):
+            if int(record['id']) == record_id:
+                self.records[record_type][i] = updated_record
+                self.save_records()
+                return
+        
+        raise ValueError(f"Record with ID '{record_id}' not found in '{record_type}' records.")    
+        
     def delete_records(self, record_type: str, record_id: int) -> None:
         """Delete record by ID."""
         if record_type not in self.RECORD_TYPES:
