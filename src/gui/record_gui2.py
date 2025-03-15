@@ -209,11 +209,11 @@ class RecordManagementSystem:
         title_label.pack(side="left")
         
         # Page Description
-        page_description = ctk.CTkLabel(
-            header_frame,
-            text="Create, edit, or manage client travel details for smooth trip planning"
-        )
-        page_description.pack(side="left", padx=20)
+        # page_description = ctk.CTkLabel(
+        #     header_frame,
+        #     text="Create, edit, or manage client travel details for smooth trip planning"
+        # )
+        # page_description.pack(side="left", padx=20)
 
         # Add New Flight Button
         new_flight_btn = ctk.CTkButton(
