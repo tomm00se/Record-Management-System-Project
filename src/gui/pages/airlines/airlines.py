@@ -5,6 +5,7 @@ Contains the Airlines Records Table as the main content.
 """
 from tkinter import ttk
 import customtkinter as ctk
+from components.utitlity import DateFormatter
 from ..base import BasePage
 
 class AirlinesPage(BasePage):
@@ -114,11 +115,13 @@ class AirlinesPage(BasePage):
 
         # Add data to table
         for airline in self.airlines:
+            formatted_created_date = DateFormatter.to_display_format(
+                airline["created_date"])
             self.tree.insert("", "end", values=(
                 airline["id"],
                 airline["company_name"],
                 airline["country"],
-                airline["created_date"]
+                formatted_created_date
             ))
 
     def fetch_airlines(self):
