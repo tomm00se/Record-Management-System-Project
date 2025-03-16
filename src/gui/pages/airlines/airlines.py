@@ -5,7 +5,7 @@ Contains the Airlines Records Table as the main content.
 """
 from tkinter import ttk
 import customtkinter as ctk
-from components.utitlity import DateFormatter
+from components.utility import DateFormatter
 from ..base import BasePage
 
 class AirlinesPage(BasePage):
