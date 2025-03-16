@@ -12,5 +12,12 @@
         "company_name": "British Airways",
         "country": "United Kingdom",
         "created_at": "2025-03-01T00:00:00.00"
+    },
+    {
+        "type": "Airline",
+        "company_name": "EasyJet",
+        "country": "United Kingdom",
+        "id": "A0003",
+        "created_at": "2025-03-16T15:49:14.080348"
     }
 ]

@@ -142,7 +142,7 @@ class RecordMgmtSystem:
                 self.main_content, self.handle_navigation, self.record_manager)
         elif page_name == "add_new_airline":
             self.current_page = NewAirlineForm(
-                self.main_content, self.handle_navigation)
+                self.main_content, self.handle_navigation, self.record_manager)
 
         self.current_page.pack(fill="both", expand=True)
 

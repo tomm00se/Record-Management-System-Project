@@ -2,11 +2,14 @@
 import customtkinter as ctk
 # from src.gui.components.select_fields import SelectCountry
 from src.gui.pages.base import BasePage
+from src.data.record_manager import RecordManager
 
 class NewAirlineForm(BasePage):
     """New Airline Form Class"""
-    def __init__(self, parent, navigation_callback):
+    def __init__(self, parent, navigation_callback, record_manager: RecordManager):
         super().__init__(parent, navigation_callback)
+        
+        self.record_manager = record_manager
 
         # Create header
         self.create_header(
@@ -75,5 +78,13 @@ class NewAirlineForm(BasePage):
 
     def on_save(self):
         """Handle save button click"""
-        # Add validation and save logic
+        
+        new_airline = {
+            "type": "Airline",
+            "company_name": self.name.get(),
+            "country": self.country.get()
+        }
+        
+        self.record_manager.add_record("airline", new_airline)
+        
         self.navigation_callback("airlines")

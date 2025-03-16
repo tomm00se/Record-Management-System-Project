@@ -130,7 +130,6 @@ class NewFlightForm(BasePage):
 
     def on_save(self):
         """Handle save button click"""
-        # Add validation and save logic
         
         new_flight = {
             "client": self.client.get(),
