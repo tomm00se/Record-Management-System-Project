@@ -120,6 +120,11 @@ class RecordMgmtSystem:
         # Clear current page if exists
         if self.current_page:
             self.current_page.destroy()
+            
+        record_data = None
+        if isinstance(page_name, dict):
+            record_data = page_name.get('data')
+            page_name = page_name.get('route')
 
         # Show new page
         if page_name == "flights":
@@ -130,7 +135,7 @@ class RecordMgmtSystem:
                 self.main_content, self.handle_navigation, self.record_manager)
         elif page_name == "edit_flight":
             self.current_page = EditFlightPage(
-                self.main_content, self.handle_navigation)
+                self.main_content, self.handle_navigation, self.record_manager, record_data)
         elif page_name == "clients":
             self.current_page = ClientsPage(
                 self.main_content, self.handle_navigation, self.record_manager)
