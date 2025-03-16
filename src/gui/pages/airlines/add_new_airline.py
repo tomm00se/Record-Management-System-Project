@@ -1,7 +1,7 @@
 """New Airline Form Module"""
 import customtkinter as ctk
-from components.select_fields import SelectCountry
-from ..base import BasePage
+# from src.gui.components.select_fields import SelectCountry
+from src.gui.pages.base import BasePage
 
 class NewAirlineForm(BasePage):
     """New Airline Form Class"""

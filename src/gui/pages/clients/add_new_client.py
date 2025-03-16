@@ -1,6 +1,6 @@
 """New Client Form Module"""
 import customtkinter as ctk
-from ..base import BasePage
+from src.gui.pages.base import BasePage
 
 
 class NewClientForm(BasePage):

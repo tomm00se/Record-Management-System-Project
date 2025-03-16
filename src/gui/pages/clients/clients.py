@@ -5,8 +5,8 @@ Contains the Clients Records Table as the main content.
 """
 from tkinter import ttk
 import customtkinter as ctk
-from components.utility import DateFormatter
-from ..base import BasePage
+from src.gui.components.utility import DateFormatter
+from src.gui.pages.base import BasePage
 
 
 class ClientsPage(BasePage):

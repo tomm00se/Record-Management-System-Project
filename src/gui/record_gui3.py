@@ -17,20 +17,22 @@ Version: 1.0
 Created Date: 16 March 2025
 """
 import sys
-import os
+from os.path import dirname, abspath, join
 import tkinter as tk
 from tkinter import ttk
 import customtkinter as ctk
 from PIL import Image
-from pages.flights import FlightsPage
-from pages.flights import NewFlightForm
-from pages.flights import EditFlightPage
-from pages.clients import ClientsPage
-from pages.clients import NewClientForm
-from pages.airlines import AirlinesPage
-from pages.airlines import NewAirlineForm
-from components.sidebar import Sidebar
-# from .components.searchbar import SearchBar
+from src.gui.pages.flights import FlightsPage
+from src.gui.pages.flights import NewFlightForm
+from src.gui.pages.flights import EditFlightPage
+from src.gui.pages.clients import ClientsPage
+from src.gui.pages.clients import NewClientForm
+from src.gui.pages.airlines import AirlinesPage
+from src.gui.pages.airlines import NewAirlineForm
+from src.gui.components.sidebar import Sidebar
+
+# Add the parent directory to the system path
+sys.path.append(abspath(join(dirname(__file__), '..')))
 
 class RecordMgmtSystem:
     """
@@ -74,7 +76,7 @@ class RecordMgmtSystem:
                 bundle = NSBundle.mainBundle()
                 info = bundle.localizedInfoDictionary() or bundle.infoDictionary()
                 info['CFBundleName'] = "Record Management System"
-                icon = tk.PhotoImage(file="../assets/rms.png")
+                icon = tk.PhotoImage(file="./assets/rms.png")
                 self.root.iconphoto(True, icon)
             except (ImportError, AttributeError) as e:
                 print(f"MacOS configuration error: {e}")
@@ -154,4 +156,4 @@ class RecordMgmtSystem:
 if __name__ == "__main__":
     root = ctk.CTk()
     app = RecordMgmtSystem(root)
-    app.run()
+    root.mainloop()

@@ -1,7 +1,7 @@
 """ Edit Flight Page Module """
 
 import customtkinter as ctk
-from ..base import BasePage
+from src.gui.pages.base import BasePage
 
 class EditFlightPage(BasePage):
     """ Edit Flight Page Class """

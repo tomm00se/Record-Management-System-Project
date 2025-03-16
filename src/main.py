@@ -1,10 +1,20 @@
+"""Record Management System GUI Application"""
 import tkinter as tk
-from gui.record_gui3 import RecordMgmtSystem
+import sys
+from pathlib import Path
+
+# Add the project root directory to Python path
+project_root = str(Path(__file__).parent.parent)
+sys.path.append(project_root)
+
+from src.gui.record_gui3 import RecordMgmtSystem
 
 def main():
+    """Create and start application"""
     root = tk.Tk()
     app = RecordMgmtSystem(root)
-    root.mainloop()
+    app.run()
+
 
 if __name__ == "__main__":
     main()

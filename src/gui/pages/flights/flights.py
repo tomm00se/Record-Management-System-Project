@@ -5,9 +5,9 @@ Contains the Flights Records Table as the main content.
 """
 from tkinter import ttk
 import customtkinter as ctk
-from components.search import Search
-from components.utility import DateFormatter
-from ..base import BasePage
+from src.gui.pages.base import BasePage
+from src.gui.components.search import Search
+from src.gui.components.utility import DateFormatter
 
 class FlightsPage(BasePage):
     """ Flights Page Class """
