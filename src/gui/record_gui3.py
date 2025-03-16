@@ -1,5 +1,20 @@
 """
-Main Container for Record Management System
+Record Management System GUI
+
+This module implements a graphical user interface for a Record Management System.
+The application is built using CustomTkinter and consists of three main components:
+
+1. Sidebar: Navigation panel with buttons for different sections
+2. Search Bar: Interface for searching records
+3. Main Frame: Display area for all content (e.g., tables, forms, etc.)
+
+Classes:
+    - SidebarButton: Custom button widget for sidebar navigation
+    - RecordManagementSystem: Main application class handling the GUI layout
+
+Version: 1.0
+
+Created Date: 16 March 2025
 """
 import sys
 import os
