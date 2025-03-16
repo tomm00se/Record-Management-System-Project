@@ -1,9 +1,9 @@
 import tkinter as tk
-from gui.record_gui import RecordManagerGUI
+from gui.record_gui3 import RecordMgmtSystem
 
 def main():
     root = tk.Tk()
-    app = RecordManagerGUI(root)
+    app = RecordMgmtSystem(root)
     root.mainloop()
 
 if __name__ == "__main__":

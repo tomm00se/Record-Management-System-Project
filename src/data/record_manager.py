@@ -8,14 +8,14 @@ class RecordManager:
     
     RECORD_TYPES = ['client', 'flight', 'airline']
     
-    def __init__(self, data_folder: str = "records", file_format: str = "jsonl"):
+    def __init__(self, data_folder: str = "data", file_format: str = "jsonl"):
         """Initialize RecordManager with data folder and file format."""
         
         self.data_folder = data_folder
         self.file_format = file_format.lower()
         
         # Check if file format is supported
-        if self.file_format not in ['jsonl', 'json', 'pickle']:
+        if self.file_format not in ['jsonl', 'json' 'pickle']:
             raise ValueError(f"File format '{self.file_format}' is not supported.")
         
         # Create data folder if it does not exist
@@ -39,6 +39,7 @@ class RecordManager:
     
     def load_records(self) -> None:
         """Load all records from files."""
+        
         for record_type in self.records.keys():
             if record_type:
                 file_path = self._get_file_path(record_type)
@@ -67,6 +68,7 @@ class RecordManager:
                 
     def save_records(self) -> None:
         """Save all records to files."""
+        
         for record_type, records in self.records.items():
             file_path = self._get_file_path(record_type)
             
@@ -86,19 +88,3 @@ class RecordManager:
                 
             except Exception as e:
                 print(f"Error saving {record_type} records: {e}")
-    
-    def add_records(self, record_type: str, new_records: List[Dict[str, Any]]) -> None:
-        """Add new records to existing records."""
-        if record_type not in self.RECORD_TYPES:
-            raise ValueError(f"Record type '{record_type}' is not supported.")
-        
-        self.records[record_type].extend(new_records)
-        self.save_records()
-        
-    def delete_records(self, record_type: str, record_id: int) -> None:
-        """Delete record by ID."""
-        if record_type not in self.RECORD_TYPES:
-            raise ValueError(f"Record type '{record_type}' is not supported.")
-        
-        self.records[record_type] = [record for record in self.records[record_type] if record['id'] != record_id]
-        self.save_records()
