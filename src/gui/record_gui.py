@@ -29,6 +29,9 @@ class RecordManagerGUI:
 
         self.add_button = tk.Button(root, text="Add Record", command=self.add_record)
         self.add_button.grid(row=2, column=0, columnspan=2)
+        
+        self.update_button = tk.Button(root, text="Update Record", command=self.update_record)
+        self.update_button.grid(row=5, column=0, columnspan=2)
 
         self.records_listbox = tk.Listbox(root)
         self.records_listbox.grid(row=3, column=0, columnspan=2)
@@ -64,6 +67,29 @@ class RecordManagerGUI:
             self.load_records()
         except json.JSONDecodeError:
             messagebox.showerror("Error", "Invalid JSON data.")
+            
+    def update_record(self):
+        selected = self.records_listbox.curselection()
+        if not selected:
+            messagebox.showerror("Error", "No record selected.")
+            return
+
+        record_type = self.record_type_entry.get()
+        record_data = self.record_data_entry.get()
+
+        if record_type not in self.record_manager.RECORD_TYPES:
+            messagebox.showerror("Error", f"Record type '{record_type}' is not supported.")
+            return
+
+        try:
+            updated_record = json.loads(record_data)
+            record_id = self.records_id_array[selected[0]].split(":", 1)[1]
+            self.record_manager.update_record(record_type, int(record_id), updated_record)
+            self.load_records()
+        except json.JSONDecodeError:
+            messagebox.showerror("Error", "Invalid JSON data.")
+        except ValueError as e:
+            messagebox.showerror("Error", str(e))
 
     def delete_record(self):
         selected = self.records_listbox.curselection()
