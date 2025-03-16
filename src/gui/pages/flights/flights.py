@@ -140,7 +140,7 @@ class FlightsPage(BasePage):
                     "departure": "Hong Kong",
                     "destination": "London",
                     "depart_date": "10 Apr 2025",
-                    "created_date": "09 Mar 2025 18:38"
+                    "created_date": "2024-03-15T10:30:00Z"
                 },
                 {
                     "id": "F0002",
@@ -150,7 +150,7 @@ class FlightsPage(BasePage):
                     "departure": "London",
                     "destination": "Hong Kong",
                     "depart_date": "30 Apr 2025",
-                    "created_date": "09 Mar 2025 18:38"
+                    "created_date": "2024-03-15T10:30:00Z"
                 }
             ]
         except Exception as e:
@@ -164,4 +164,4 @@ class FlightsPage(BasePage):
 
     def on_new_flight_click(self):
         """Handle new flight button click"""
-        self.navigation_callback("addNewFlight")
+        self.navigation_callback("add_new_flight")
