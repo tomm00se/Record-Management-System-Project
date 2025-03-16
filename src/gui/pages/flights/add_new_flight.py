@@ -20,7 +20,7 @@ class NewFlightForm(BasePage):
         """Create the form for adding a new flight"""
         # Form container
         form_frame = ctk.CTkFrame(self.content_frame, fg_color="transparent")
-        form_frame.pack(fill="both", expand=True)
+        form_frame.pack(fill="both", expand=True, padx=15, pady=15)
 
         # Client Selection
         self.create_field(form_frame, "Client", True)
@@ -102,7 +102,7 @@ class NewFlightForm(BasePage):
         # Save Button
         ctk.CTkButton(
             button_frame,
-            text="Save Flight",
+            text="Save",
             command=self.on_save
         ).pack(side="left")
 
