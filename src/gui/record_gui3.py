@@ -17,6 +17,7 @@ Version: 1.0
 Created Date: 16 March 2025
 """
 import sys
+import os
 from os.path import dirname, abspath, join
 import tkinter as tk
 import customtkinter as ctk
