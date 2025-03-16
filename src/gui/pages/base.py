@@ -67,17 +67,24 @@ class BasePage(ctk.CTkFrame):
 
     def create_header(self, title, description=None):
         """Create Standard Page Header"""
+        # Create a container for the header content
+        header_content = ctk.CTkFrame(self.header_frame, fg_color="transparent")
+        header_content.pack(fill="x", padx=0, pady=0)
+        
+        #Title Row
         title_label = ctk.CTkLabel(
-            self.header_frame,
+            header_content,
             text=title,
-            font=("Arial", 24, "bold")
+            font=("Arial", 24, "bold"),
+            pady=5
         )
-        title_label.pack(side="left")
+        title_label.pack(anchor="w")
 
+        #Description Row
         if description:
             desc_label = ctk.CTkLabel(
-                self.header_frame,
+                header_content,
                 text=description,
                 font=("Arial", 13)
             )
-            desc_label.pack(side="bottom", padx=(20, 0))
+            desc_label.pack(anchor="w", padx=0, pady=0)
