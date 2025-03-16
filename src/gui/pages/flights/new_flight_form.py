@@ -1,11 +1,13 @@
 """New Flight Form Module"""
 import customtkinter as ctk
 from src.gui.pages.base import BasePage
+from src.data.record_manager import RecordManager
 
 class NewFlightForm(BasePage):
     """New Flight Form Class"""
-    def __init__(self, parent, navigation_callback):
+    def __init__(self, parent, navigation_callback, record_manager):
         super().__init__(parent, navigation_callback)
+        self.record_manager = record_manager
 
         # Create header
         self.create_header(
@@ -122,4 +124,16 @@ class NewFlightForm(BasePage):
     def on_save(self):
         """Handle save button click"""
         # Add validation and save logic
+        
+        new_flight = {
+            "client": self.client.get(),
+            "airline": self.airline.get(),
+            "departure": self.from_city.get(),
+            "destination": self.to_city.get(),
+            "depart_date": self.depart_date.get(),
+            "return_date": self.return_date.get(),
+        }
+        
+        self.record_manager.add_record("flight", new_flight)
+        
         self.navigation_callback("flights")

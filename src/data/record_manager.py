@@ -1,3 +1,4 @@
+import datetime
 import os
 import json
 import pickle
@@ -87,10 +88,15 @@ class RecordManager:
             except Exception as e:
                 print(f"Error saving {record_type} records: {e}")
     
-    def add_records(self, record_type: str, new_records: List[Dict[str, Any]]) -> None:
+    def add_record(self, record_type: str, new_record: Dict[str, Any]) -> None:
         """Add new records to existing records."""
         if record_type not in self.RECORD_TYPES:
             raise ValueError(f"Record type '{record_type}' is not supported.")
+        
+        new_record['id'] = f"{record_type.upper()[0]}{len(self.records[record_type]) + 1:04d}"
+        new_record['created_at'] = datetime.datetime.now().isoformat()
+        
+        new_records = [new_record]
         
         self.records[record_type].extend(new_records)
         self.save_records()

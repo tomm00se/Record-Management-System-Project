@@ -127,7 +127,7 @@ class RecordMgmtSystem:
                 self.main_content, self.handle_navigation, self.record_manager)
         elif page_name == "add_new_flight":
             self.current_page = NewFlightForm(
-                self.main_content, self.handle_navigation)
+                self.main_content, self.handle_navigation, self.record_manager)
         elif page_name == "edit_flight":
             self.current_page = EditFlightPage(
                 self.main_content, self.handle_navigation)

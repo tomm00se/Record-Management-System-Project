@@ -118,13 +118,13 @@ class AirlinesPage(BasePage):
 
         # Add data to table
         for airline in self.airlines:
-            formatted_created_date = DateFormatter.to_display_format(
-                airline["created_date"])
+            formatted_created_at = DateFormatter.to_display_format(
+                airline["created_at"])
             self.tree.insert("", "end", values=(
                 airline["id"],
                 airline["company_name"],
                 airline["country"],
-                formatted_created_date
+                formatted_created_at
             ))
 
     def fetch_airlines(self):

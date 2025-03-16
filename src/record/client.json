@@ -12,7 +12,7 @@
     "country": "Hong Kong",
     "phone": "+852 9123 4567",
     "email": "w.wong12@liverpool.ac.uk",
-    "created_date": "2025-03-01T00:00:00Z"
+    "created_at": "2025-03-01T00:00:00.00"
   },
   {
     "id": "C0002",
@@ -27,7 +27,7 @@
     "country": "United Kingdom",
     "phone": "+44 7700 900123",
     "email": "t.bowden@liverpool.ac.uk",
-    "created_date": "2025-03-02T00:00:00Z"
+    "created_at": "2025-03-02T00:00:00.00"
   },
   {
     "id": "C0003",
@@ -42,7 +42,7 @@
     "country": "Hong Kong",
     "phone": "+852 9123 4567",
     "email": "w.wong12@liverpool.ac.uk",
-    "created_date": "2025-03-01T00:00:00Z"
+    "created_at": "2025-03-01T00:00:00.00"
   },
   {
     "id": "C0004",
@@ -57,6 +57,6 @@
     "country": "United Kingdom",
     "phone": "+44 7700 900123",
     "email": "t.bowden@liverpool.ac.uk",
-    "created_date": "2025-03-02T00:00:00Z"
+    "created_at": "2025-03-02T00:00:00.00"
   }
 ]

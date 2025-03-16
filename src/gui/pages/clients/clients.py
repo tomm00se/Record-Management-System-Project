@@ -119,8 +119,8 @@ class ClientsPage(BasePage):
 
         # Add data to table
         for client in self.clients:
-            formatted_created_date = DateFormatter.to_display_format(
-                client["created_date"])
+            formatted_created_at = DateFormatter.to_display_format(
+                client["created_at"])
             self.tree.insert("", "end", values=(
                 client["id"],
                 client["name"],
@@ -128,7 +128,7 @@ class ClientsPage(BasePage):
                 client["country"],
                 client["phone"],
                 client["email"],
-                formatted_created_date
+                formatted_created_at
             ))
 
     def fetch_clients(self):

@@ -120,8 +120,8 @@ class FlightsPage(BasePage):
 
         # Add data to table
         for flight in self.flights:
-            formatted_created_date = DateFormatter.to_display_format(
-                flight["created_date"])
+            formatted_created_at = DateFormatter.to_display_format(
+                flight["created_at"])
 
             # Insert row with values
             item_id = self.tree.insert("", "end", values=(
@@ -131,7 +131,7 @@ class FlightsPage(BasePage):
                 flight["departure"],
                 flight["destination"],
                 flight["depart_date"],
-                formatted_created_date,
+                formatted_created_at,
                 "Edit"  # Using edit symbol instead of button
             ))
 
@@ -155,8 +155,8 @@ class FlightsPage(BasePage):
 
         if matched_flights:
             for flight in matched_flights:
-                formatted_created_date = DateFormatter.to_display_format(
-                    flight["created_date"])
+                formatted_created_at = DateFormatter.to_display_format(
+                    flight["created_at"])
 
                 # Insert row
                 item_id = self.tree.insert("", "end", values=(
@@ -166,7 +166,7 @@ class FlightsPage(BasePage):
                     flight["departure"],
                     flight["destination"],
                     flight["depart_date"],
-                    formatted_created_date,
+                    formatted_created_at,
                     "Edit"  # Simple text for edit action
                 ))
 
