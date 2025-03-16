@@ -24,10 +24,12 @@ import customtkinter as ctk
 from src.gui.pages.flights import FlightsPage
 from src.gui.pages.flights import NewFlightForm
 from src.gui.pages.flights import EditFlightPage
-from src.gui.pages.clients import ClientsPage
-from src.gui.pages.clients import NewClientForm
+from src.gui.pages.clients.clients import ClientsPage
+from src.gui.pages.clients.add_new_client import NewClientForm
+from src.gui.pages.clients.edit_clients import EditClientPage
 from src.gui.pages.airlines import AirlinesPage
 from src.gui.pages.airlines import NewAirlineForm
+from src.gui.pages.airlines.edit_airlines import EditAirlinePage
 from src.gui.components.sidebar import Sidebar
 from src.data.record_manager import RecordManager
 from Foundation import NSBundle
@@ -142,12 +144,19 @@ class RecordMgmtSystem:
         elif page_name == "add_new_client":
             self.current_page = NewClientForm(
                 self.main_content, self.handle_navigation, self.record_manager)
+        elif page_name == "edit_client":
+            self.current_page = EditClientPage(
+                self.main_content, self.handle_navigation, self.record_manager, record_data)
         elif page_name == "airlines":
             self.current_page = AirlinesPage(
                 self.main_content, self.handle_navigation, self.record_manager)
         elif page_name == "add_new_airline":
             self.current_page = NewAirlineForm(
                 self.main_content, self.handle_navigation, self.record_manager)
+        elif page_name == "edit_airline":
+            self.current_page = EditAirlinePage(
+                self.main_content, self.handle_navigation, self.record_manager, record_data)
+
 
         self.current_page.pack(fill="both", expand=True)
 
