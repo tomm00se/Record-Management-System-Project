@@ -174,7 +174,11 @@ class FlightsPage(BasePage):
                 self.tree.tag_bind(item_id, 'edit_action',
                                    lambda e, f=flight: self.on_edit_click(f))
         else:
-            self.show_no_results()
+            # Show no results found
+            self.tree.insert("", "end", values=(
+                "",
+                "No results found",
+            ))
 
     # Helper Methods
     def show_loading(self):

@@ -8,6 +8,7 @@ import customtkinter as ctk
 from src.gui.components.utility import DateFormatter
 from src.gui.pages.base import BasePage
 from src.data.record_manager import RecordManager
+from src.gui.components.search import Search
 
 class AirlinesPage(BasePage):
     """ Airlines Page Class """
@@ -52,6 +53,14 @@ class AirlinesPage(BasePage):
         try:
             # Add New Client Button
             self.create_action_buttons()
+            
+            # Add Search Bar
+            self.search_frame = Search(
+                self.content_frame,
+                search_placeholder="Search by Airline Name",
+                search_callback=self.handle_search
+            )
+            self.search_frame.pack(fill="x", padx=10, pady=(0, 10))
 
             # Create Table
             self.create_airline_table()
@@ -132,6 +141,44 @@ class AirlinesPage(BasePage):
                 airline["country"],
                 formatted_created_at,
                 "Edit"
+            ))
+            
+    def handle_search(self, search_text):
+        """Handle search callback from SearchFrame"""
+        search_text = search_text.lower()
+
+        # Clear existing items
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+
+        # Filter and display matching flights
+        matched_airlines = [
+            airline for airline in self.airlines
+            if search_text in airline["company_name"].lower()
+        ]
+
+        if matched_airlines:
+            for airline in matched_airlines:
+                formatted_created_at = DateFormatter.to_display_format(
+                    airline["created_at"])
+
+                # Insert row
+                item_id = self.tree.insert("", "end", values=(
+                    airline["id"],
+                    airline["company_name"],
+                    airline["country"],
+                    formatted_created_at,
+                    "Edit"
+                ))
+
+                # Place button in the last column
+                self.tree.tag_bind(item_id, 'edit_action',
+                                   lambda e, f=airline: self.on_edit_click(f))
+        else:
+            # Show no results found
+            self.tree.insert("", "end", values=(
+                "",
+                "No results found",
             ))
 
     def fetch_airlines(self):

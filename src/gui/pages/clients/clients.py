@@ -8,6 +8,7 @@ import customtkinter as ctk
 from src.gui.components.utility import DateFormatter
 from src.gui.pages.base import BasePage
 from src.data.record_manager import RecordManager
+from src.gui.components.search import Search
 
 
 class ClientsPage(BasePage):
@@ -53,6 +54,15 @@ class ClientsPage(BasePage):
         try:
             # Add New Client Button
             self.create_action_buttons()
+            
+            # Add Search Bar
+            self.search_frame = Search(
+                self.content_frame,
+                search_placeholder="Search by Client Name",
+                search_callback=self.handle_search
+            )
+            self.search_frame.pack(fill="x", padx=10, pady=(0, 10))
+
 
             # Create Table
             self.create_client_table()
@@ -136,6 +146,47 @@ class ClientsPage(BasePage):
                 client["email"],
                 formatted_created_at,
                 "Edit"
+            ))
+    
+    def handle_search(self, search_text):
+        """Handle search callback from SearchFrame"""
+        search_text = search_text.lower()
+
+        # Clear existing items
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+
+        # Filter and display matching flights
+        matched_clients = [
+            client for client in self.clients
+            if search_text in client["name"].lower()
+        ]
+
+        if matched_clients:
+            for client in matched_clients:
+                formatted_created_at = DateFormatter.to_display_format(
+                    client["created_at"])
+
+                # Insert row
+                item_id = self.tree.insert("", "end", values=(
+                    client["id"],
+                    client["name"],
+                    client["city"],
+                    client["country"],
+                    client["phone"],
+                    client["email"],
+                    formatted_created_at,
+                    "Edit"
+                ))
+
+                # Place button in the last column
+                self.tree.tag_bind(item_id, 'edit_action',
+                                   lambda e, f=client: self.on_edit_click(f))
+        else:
+            # Show no results found
+            self.tree.insert("", "end", values=(
+                "",
+                "No results found",
             ))
 
     def fetch_clients(self):
