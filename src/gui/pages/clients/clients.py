@@ -5,6 +5,7 @@ Contains the Clients Records Table as the main content.
 """
 from tkinter import ttk
 import customtkinter as ctk
+from components.utitlity import DateFormatter
 from ..base import BasePage
 
 
@@ -115,6 +116,8 @@ class ClientsPage(BasePage):
 
         # Add data to table
         for client in self.clients:
+            formatted_created_date = DateFormatter.to_display_format(
+                client["created_date"])
             self.tree.insert("", "end", values=(
                 client["id"],
                 client["name"],
@@ -122,7 +125,7 @@ class ClientsPage(BasePage):
                 client["country"],
                 client["phone"],
                 client["email"],
-                client["created_date"]
+                formatted_created_date
             ))
 
     def fetch_clients(self):

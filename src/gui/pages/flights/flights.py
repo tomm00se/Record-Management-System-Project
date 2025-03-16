@@ -5,6 +5,8 @@ Contains the Flights Records Table as the main content.
 """
 from tkinter import ttk
 import customtkinter as ctk
+from components.search import Search
+from components.utitlity import DateFormatter
 from ..base import BasePage
 
 class FlightsPage(BasePage):
@@ -48,11 +50,47 @@ class FlightsPage(BasePage):
         try:
             # Add New Flight Button
             self.create_action_buttons()
+            
+            # Add Search Bar
+            self.search_frame = Search (
+                self.content_frame,
+                search_placeholder="Search by Client Name",
+                search_callback=self.handle_search
+            )
+            self.search_frame.pack(fill="x", padx=10, pady=(0, 10))
 
             # Create Table
             self.create_flight_table()
         except Exception as e:
             print(f"Error setting up content: {e}")
+
+    def handle_search(self, search_text):
+        """Handle search callback from SearchFrame"""
+        search_text = search_text.lower()
+
+        # Clear existing items
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+
+        # Filter and display matching flights
+        matched_flights = [
+            flight for flight in self.flights
+            if search_text in flight["client"].lower()
+        ]
+
+        if matched_flights:
+            for flight in matched_flights:
+                self.tree.insert("", "end", values=(
+                    flight["id"],
+                    flight["client"],
+                    flight["airline"],
+                    flight["departure"],
+                    flight["destination"],
+                    flight["depart_date"],
+                    flight["created_date"]
+                ))
+        else:
+            self.show_no_results()
 
     def create_action_buttons(self):
         """Create action buttons like 'New Flight'"""
@@ -114,6 +152,8 @@ class FlightsPage(BasePage):
 
         # Add data to table
         for flight in self.flights:
+            formatted_created_date = DateFormatter.to_display_format(
+                flight["created_date"])
             self.tree.insert("", "end", values=(
                 flight["id"],
                 flight["client"],
@@ -121,7 +161,7 @@ class FlightsPage(BasePage):
                 flight["departure"],
                 flight["destination"],
                 flight["depart_date"],
-                flight["created_date"]
+                formatted_created_date
             ))
 
     def fetch_flights(self):
@@ -151,6 +191,16 @@ class FlightsPage(BasePage):
                     "destination": "Hong Kong",
                     "depart_date": "30 Apr 2025",
                     "created_date": "2024-03-15T10:30:00Z"
+                },
+                {
+                    "id": "F0003",
+                    "type": "Flight",
+                    "client": "Tommy Bowden",
+                    "airline": "British Airways",
+                    "departure": "London",
+                    "destination": "Hong Kong",
+                    "depart_date": "28 Apr 2025",
+                    "created_date": "2024-03-16T10:30:00Z"
                 }
             ]
         except Exception as e:
