@@ -136,7 +136,7 @@ class RecordMgmtSystem:
                 self.main_content, self.handle_navigation, self.record_manager)
         elif page_name == "add_new_client":
             self.current_page = NewClientForm(
-                self.main_content, self.handle_navigation)
+                self.main_content, self.handle_navigation, self.record_manager)
         elif page_name == "airlines":
             self.current_page = AirlinesPage(
                 self.main_content, self.handle_navigation, self.record_manager)

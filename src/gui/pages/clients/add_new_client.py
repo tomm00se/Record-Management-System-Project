@@ -1,13 +1,16 @@
 """New Client Form Module"""
 import customtkinter as ctk
 from src.gui.pages.base import BasePage
+from src.data.record_manager import RecordManager
 
 
 class NewClientForm(BasePage):
     """New Client Form Class"""
 
-    def __init__(self, parent, navigation_callback):
+    def __init__(self, parent, navigation_callback, record_manager: RecordManager):
         super().__init__(parent, navigation_callback)
+        
+        self.record_manager = record_manager
 
         # Create header
         self.create_header(
@@ -162,5 +165,22 @@ class NewClientForm(BasePage):
 
     def on_save(self):
         """Handle save button click"""
-        # Here you would add validation and save logic
+        new_client = {
+            "type": "Client",
+            "name": self.name.get(),
+            "address_line1": self.address_line1.get(),
+            "address_line2": self.address_line2.get(),
+            "address_line3": self.address_line3.get(),
+            "city": self.city.get(),
+            "state": self.state.get(),
+            "zip_code": self.zip_code.get(),
+            "country": self.country.get(),
+            "phone": self.phone.get(),
+            "email": self.email.get()
+        }
+
+        # Save client data to record manager
+        self.record_manager.add_record("client", new_client)
+
+        # Navigate back to clients page
         self.navigation_callback("clients")
