@@ -1,1 +1,5 @@
-jsonlines
+auto_mix_prep==0.2.0
+customtkinter==5.2.2
+Foundation==0.1.0a0.dev1
+Pillow==11.1.0
+pyobjc_framework_Cocoa==11.0
