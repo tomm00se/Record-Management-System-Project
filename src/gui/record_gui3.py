@@ -9,6 +9,7 @@ import customtkinter as ctk
 from PIL import Image
 from pages.flights import FlightsPage
 from pages.flights import NewFlightForm
+from pages.flights import EditFlightPage
 from pages.clients import ClientsPage
 from pages.clients import NewClientForm
 from pages.airlines import AirlinesPage
@@ -107,6 +108,9 @@ class RecordMgmtSystem:
                 self.main_content, self.handle_navigation)
         elif page_name == "add_new_flight":
             self.current_page = NewFlightForm(
+                self.main_content, self.handle_navigation)
+        elif page_name == "edit_flight":
+            self.current_page = EditFlightPage(
                 self.main_content, self.handle_navigation)
         elif page_name == "clients":
             self.current_page = ClientsPage(
