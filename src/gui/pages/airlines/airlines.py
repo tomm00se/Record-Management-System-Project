@@ -7,13 +7,16 @@ from tkinter import ttk
 import customtkinter as ctk
 from src.gui.components.utility import DateFormatter
 from src.gui.pages.base import BasePage
+from src.data.record_manager import RecordManager
 
 class AirlinesPage(BasePage):
     """ Airlines Page Class """
 
-    def __init__(self, parent, navigation_callback):
+    def __init__(self, parent, navigation_callback, record_manager: RecordManager):
         super().__init__(parent, navigation_callback)  # Initialize the base page first
 
+        self.record_manager = record_manager
+        
         # Initialize attributes first
         self.airlines = []  # Initialize airlines list
         self.tree = None   # Initialize tree
@@ -131,22 +134,7 @@ class AirlinesPage(BasePage):
         """
         try:
             # This is sample data - replace with your actual data fetching logic
-            self.airlines = [
-                {
-                    "id": "A0001",
-                    "type": "Airline",
-                    "company_name": "Cathay Pacific Airways",
-                    "country": "Hong Kong",
-                    "created_date": "2025-03-01T00:00:00Z"
-                },
-                {
-                    "id": "A0002",
-                    "type": "Airline",
-                    "company_name": "British Airways",
-                    "country": "United Kingdom",
-                    "created_date": "2025-03-01T00:00:00Z"
-                }
-            ]
+            self.airlines = self.record_manager.records["airline"]
         except Exception as e:
             print(f"Error fetching airlines: {e}")
             self.airlines = []

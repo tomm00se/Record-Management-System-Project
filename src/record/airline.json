@@ -1,8 +1,16 @@
 [
   {
-    "id": "1"
+    "id": "A0001",
+    "type": "Airline",
+    "company_name": "Cathay Pacific Airways",
+    "country": "Hong Kong",
+    "created_date": "2025-03-01T00:00:00Z"
   },
   {
-    "id": "2"
+    "id": "A0002",
+    "type": "Airline",
+    "company_name": "British Airways",
+    "country": "United Kingdom",
+    "created_date": "2025-03-01T00:00:00Z"
   }
 ]

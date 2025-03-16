@@ -7,13 +7,16 @@ from tkinter import ttk
 import customtkinter as ctk
 from src.gui.components.utility import DateFormatter
 from src.gui.pages.base import BasePage
+from src.data.record_manager import RecordManager
 
 
 class ClientsPage(BasePage):
     """ Clients Page Class """
 
-    def __init__(self, parent, navigation_callback):
+    def __init__(self, parent, navigation_callback, record_manager: RecordManager):
         super().__init__(parent, navigation_callback)  # Initialize the base page first
+        
+        self.record_manager = record_manager
 
         # Initialize attributes first
         self.clients = []  # Initialize clients list
@@ -134,39 +137,7 @@ class ClientsPage(BasePage):
         For now, using sample data
         """
         try:
-            # This is sample data - replace with your actual data fetching logic
-            self.clients = [
-                {
-                    "id": "C0001",
-                    "type": "Client",
-                    "name": "Leona Wong",
-                    "address_line1": "Unit 1208, Tower A",
-                    "address_line2": "Enterprise Square",
-                    "address_line3": "9 Sheung Yuet Road",
-                    "city": "Kowloon Bay",
-                    "state": "Kowloon",
-                    "zip_code": "00000",
-                    "country": "Hong Kong",
-                    "phone": "+852 9123 4567",
-                    "email": "w.wong12@liverpool.ac.uk",
-                    "created_date": "2025-03-01T00:00:00Z"
-                },
-                {
-                    "id": "C0002",
-                    "type": "Client",
-                    "name": "Tommy Bowden",
-                    "address_line1": "42 Oxford Street",
-                    "address_line2": "Apartment 15B",
-                    "address_line3": "Westminster",
-                    "city": "London",
-                    "state": "Greater London",
-                    "zip_code": "W1D 2DW",
-                    "country": "United Kingdom",
-                    "phone": "+44 7700 900123",
-                    "email": "t.bowden@liverpool.ac.uk",
-                    "created_date": "2025-03-02T00:00:00Z"
-                }
-            ]
+            self.clients = self.record_manager.records["client"]
         except Exception as e:
             print(f"Error fetching clients: {e}")
             self.clients = []
