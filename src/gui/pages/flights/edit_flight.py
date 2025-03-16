@@ -113,13 +113,26 @@ class EditFlightPage(BasePage):
             text_color="#000000"
         ).pack(side="left", padx=(0, 10))
 
+
         # Save Button
         ctk.CTkButton(
             button_frame,
             text="Save",
             command=self.on_save
         ).pack(side="left")
+        
+        button_frame_delete = ctk.CTkFrame(form_frame, fg_color="transparent")
+        button_frame_delete.pack(fill="x", pady=(20, 0))
 
+        # Delete Button
+        ctk.CTkButton(
+            button_frame_delete,
+            text="Delete",
+            command=self.on_delete,
+            fg_color="#FF3B30",
+            text_color="#FFFFFF"
+        ).pack(side="left", padx=(0, 10))
+        
     def get_airlines(self) -> list[str]:
         """Get list of airlines from the record manager"""
         airlines = self.record_manager.records["airline"]
@@ -157,4 +170,9 @@ class EditFlightPage(BasePage):
         
         self.record_manager.update_record("flight", new_flight["id"], new_flight)
         
+        self.navigation_callback("flights")
+
+    def on_delete(self):
+        """Handle delete button click"""
+        self.record_manager.delete_record("flight", self.flight_data["id"])
         self.navigation_callback("flights")

@@ -93,7 +93,9 @@ class RecordManager:
         if record_type not in self.RECORD_TYPES:
             raise ValueError(f"Record type '{record_type}' is not supported.")
         
-        new_record['id'] = f"{record_type.upper()[0]}{len(self.records[record_type]) + 1:04d}"
+        last_record_id = self.records[record_type][-1]['id'] if self.records[record_type] else 'F0000'
+        new_record_id = int(last_record_id[1:]) + 1
+        new_record['id'] = f"{record_type.upper()[0]}{new_record_id:04d}"
         new_record['created_at'] = datetime.datetime.now().isoformat()
         
         new_records = [new_record]
@@ -114,7 +116,7 @@ class RecordManager:
         
         raise ValueError(f"Record with ID '{record_id}' not found in '{record_type}' records.")    
         
-    def delete_records(self, record_type: str, record_id: int) -> None:
+    def delete_record(self, record_type: str, record_id: int) -> None:
         """Delete record by ID."""
         if record_type not in self.RECORD_TYPES:
             raise ValueError(f"Record type '{record_type}' is not supported.")
