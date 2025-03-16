@@ -28,6 +28,7 @@ from src.gui.pages.clients import NewClientForm
 from src.gui.pages.airlines import AirlinesPage
 from src.gui.pages.airlines import NewAirlineForm
 from src.gui.components.sidebar import Sidebar
+from Foundation import NSBundle
 
 # Add the parent directory to the system path
 sys.path.append(abspath(join(dirname(__file__), '..')))
@@ -70,7 +71,6 @@ class RecordMgmtSystem:
         """Configure macOS settings for the application."""
         if sys.platform == "darwin":  # macOS
             try:
-                from Foundation import NSBundle
                 bundle = NSBundle.mainBundle()
                 info = bundle.localizedInfoDictionary() or bundle.infoDictionary()
                 info['CFBundleName'] = "Record Management System"
