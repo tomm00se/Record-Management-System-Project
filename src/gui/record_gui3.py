@@ -17,6 +17,7 @@ Version: 1.0
 Created Date: 16 March 2025
 """
 import sys
+import os
 from os.path import dirname, abspath, join
 import tkinter as tk
 import customtkinter as ctk
@@ -28,6 +29,7 @@ from src.gui.pages.clients import NewClientForm
 from src.gui.pages.airlines import AirlinesPage
 from src.gui.pages.airlines import NewAirlineForm
 from src.gui.components.sidebar import Sidebar
+from src.data.record_manager import RecordManager
 from Foundation import NSBundle
 
 # Add the parent directory to the system path
@@ -51,6 +53,8 @@ class RecordMgmtSystem:
         # Set application theme and color
         ctk.set_appearance_mode("light")
         ctk.set_default_color_theme("blue")
+        
+        self.record_manager = RecordManager(data_folder="src/record", file_format="json")
         
         # Initialize GUI components
         self.create_menu()
@@ -120,7 +124,7 @@ class RecordMgmtSystem:
         # Show new page
         if page_name == "flights":
             self.current_page = FlightsPage(
-                self.main_content, self.handle_navigation)
+                self.main_content, self.handle_navigation, self.record_manager)
         elif page_name == "add_new_flight":
             self.current_page = NewFlightForm(
                 self.main_content, self.handle_navigation)
