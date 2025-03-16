@@ -2,7 +2,7 @@ import unittest
 import os
 import json
 import pickle
-import shutil  # Import shutil to remove the test folder
+import shutil
 from src.data.record_manager import RecordManager
 
 class TestRecordManager(unittest.TestCase):

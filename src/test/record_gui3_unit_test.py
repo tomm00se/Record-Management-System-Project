@@ -1,3 +1,4 @@
+import sys
 import unittest
 from unittest.mock import MagicMock
 import tkinter as tk
@@ -22,7 +23,6 @@ class TestRecordMgmtSystem(unittest.TestCase):
 
     def test_macos_configuration(self):
         """Test macOS-specific settings."""
-        # This test is platform-dependent, so it's not critical for other platforms.
         # You can skip this or mock it if needed
         if sys.platform == "darwin":
             with self.assertLogs(level="INFO") as log:
@@ -51,7 +51,6 @@ class TestRecordMgmtSystem(unittest.TestCase):
 
     def test_restart_app(self):
         """Test the restart app functionality."""
-        # We can't actually restart the app in the test environment, but we can check if the method is called.
         with self.assertRaises(SystemExit):  # Restart will raise a SystemExit error
             self.app.restart_app()
 
