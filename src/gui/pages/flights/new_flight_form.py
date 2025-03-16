@@ -36,7 +36,7 @@ class NewFlightForm(BasePage):
         self.create_field(form_frame, "Airline", True)
         self.airline = ctk.CTkOptionMenu(
             form_frame,
-            values=["Cathay Pacific Airways"]
+            values=self.get_airlines()
         )
         self.airline.pack(fill="x", pady=(0, 15))
 
@@ -107,6 +107,13 @@ class NewFlightForm(BasePage):
             text="Save",
             command=self.on_save
         ).pack(side="left")
+
+    def get_airlines(self) -> list[str]:
+        """Get list of airlines from the record manager"""
+        airlines = self.record_manager.records["airline"]
+        return [airline["company_name"] for airline
+                in airlines]
+        
 
     def create_field(self, parent, label, required=False):
         """Create form field label"""
