@@ -1,9 +1,35 @@
 [
   {
-    "name": "Flight 1",
-    "id": "1"
+    "id": "F0001",
+    "type": "Flight",
+    "client": "Leona Wong",
+    "airline": "Cathay Pacific Airways",
+    "departure": "Hong Kong",
+    "destination": "London",
+    "depart_date": "10 Apr 2025",
+    "created_date": "2024-03-15T10:30:00Z"
   },
   {
-    "id": "2"
+    "id": "F0002",
+    "type": "Flight",
+    "client": "Leona Wong",
+    "airline": "Cathay Pacific Airways",
+    "departure": "London",
+    "destination": "Hong Kong",
+    "depart_date": "30 Apr 2025",
+    "created_date": "2024-03-15T10:30:00Z"
+  },
+  {
+    "id": "F0003",
+    "type": "Flight",
+    "client": "Tommy Bowden",
+    "airline": "British Airways",
+    "departure": "London",
+    "destination": "Hong Kong",
+    "depart_date": "28 Apr 2025",
+    "created_date": "2024-03-16T10:30:00Z"
+  },
+  {
+    "egg": "test"
   }
 ]
