@@ -80,6 +80,8 @@ class FlightsPage(BasePage):
 
         if matched_flights:
             for flight in matched_flights:
+                formatted_created_date = DateFormatter.to_display_format(
+                    flight["created_date"])
                 self.tree.insert("", "end", values=(
                     flight["id"],
                     flight["client"],
@@ -87,7 +89,7 @@ class FlightsPage(BasePage):
                     flight["departure"],
                     flight["destination"],
                     flight["depart_date"],
-                    flight["created_date"]
+                    formatted_created_date
                 ))
         else:
             self.show_no_results()
