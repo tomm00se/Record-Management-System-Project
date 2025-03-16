@@ -19,9 +19,7 @@ Created Date: 16 March 2025
 import sys
 from os.path import dirname, abspath, join
 import tkinter as tk
-from tkinter import ttk
 import customtkinter as ctk
-from PIL import Image
 from src.gui.pages.flights import FlightsPage
 from src.gui.pages.flights import NewFlightForm
 from src.gui.pages.flights import EditFlightPage
@@ -76,7 +74,7 @@ class RecordMgmtSystem:
                 bundle = NSBundle.mainBundle()
                 info = bundle.localizedInfoDictionary() or bundle.infoDictionary()
                 info['CFBundleName'] = "Record Management System"
-                icon = tk.PhotoImage(file="./assets/rms.png")
+                icon = tk.PhotoImage(file="src/assets/rms.png")
                 self.root.iconphoto(True, icon)
             except (ImportError, AttributeError) as e:
                 print(f"MacOS configuration error: {e}")
