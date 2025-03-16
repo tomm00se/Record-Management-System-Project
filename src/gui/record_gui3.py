@@ -9,8 +9,10 @@ import customtkinter as ctk
 from PIL import Image
 from pages.flights import FlightsPage
 from pages.flights import NewFlightForm
-# from pages.clients import ClientsPage
-# from pages.airlines import AirlinesPage
+from pages.clients import ClientsPage
+from pages.clients import NewClientForm
+from pages.airlines import AirlinesPage
+from pages.airlines import NewAirlineForm
 from components.sidebar import Sidebar
 # from .components.searchbar import SearchBar
 
@@ -103,13 +105,21 @@ class RecordMgmtSystem:
         if page_name == "flights":
             self.current_page = FlightsPage(
                 self.main_content, self.handle_navigation)
-        elif page_name == "addNewFlight":
+        elif page_name == "add_new_flight":
             self.current_page = NewFlightForm(
                 self.main_content, self.handle_navigation)
-        # elif page_name == "clients":
-        #     self.current_page = ClientsPage(self.main_content)
-        # elif page_name == "airlines":
-        #     self.current_page = AirlinesPage(self.main_content)
+        elif page_name == "clients":
+            self.current_page = ClientsPage(
+                self.main_content, self.handle_navigation)
+        elif page_name == "add_new_client":
+            self.current_page = NewClientForm(
+                self.main_content, self.handle_navigation)
+        elif page_name == "airlines":
+            self.current_page = AirlinesPage(
+                self.main_content, self.handle_navigation)
+        elif page_name == "add_new_airline":
+            self.current_page = NewAirlineForm(
+                self.main_content, self.handle_navigation)
 
         self.current_page.pack(fill="both", expand=True)
 
