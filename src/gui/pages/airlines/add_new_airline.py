@@ -1,11 +1,10 @@
 """New Airline Form Module"""
 import customtkinter as ctk
+from components.select_fields import SelectCountry
 from ..base import BasePage
-
 
 class NewAirlineForm(BasePage):
     """New Airline Form Class"""
-
     def __init__(self, parent, navigation_callback):
         super().__init__(parent, navigation_callback)
 
@@ -22,19 +21,24 @@ class NewAirlineForm(BasePage):
         """Create the form for adding a new airline"""
         # Form container
         form_frame = ctk.CTkFrame(self.content_frame, fg_color="transparent")
-        form_frame.pack(fill="both", expand=True)
+        form_frame.pack(fill="both", expand=True, padx=15, pady=15)
 
-        # Airline Selection
+        # Airline Name
         self.create_field(form_frame, "Airline", True)
-        self.airline = ctk.CTkOptionMenu(
+        self.name = ctk.CTkEntry(
             form_frame,
-            values=["Cathay Pacific Airways"]
+            fg_color="white",
+            placeholder_text="Enter Airline Company Name"
         )
-        self.airline.pack(fill="x", pady=(0, 15))
+        self.name.pack(fill="x", pady=(0, 15))
 
-        # Cities Frame
-        cities_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
-        cities_frame.pack(fill="x", pady=(0, 15))
+        # Country
+        self.create_field(form_frame, "Country", True)
+        self.country = ctk.CTkEntry(
+            form_frame,
+            placeholder_text="Enter country"
+        )
+        self.country.pack(fill="x", pady=(0, 15))
 
         # Buttons
         button_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
