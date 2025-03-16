@@ -106,6 +106,12 @@ class AirlinesPage(BasePage):
         # Pack scrollbar and tree
         scrollbar.pack(side="right", fill="y")
         self.tree.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        # Bind double-click event
+        self.tree.bind('<Double-1>', self.on_row_double_click)
+
+        #Bind click event for the Action column
+        self.tree.bind('<Button-1>', self.handle_click)
 
         # Insert the sample data
         self.populate_table()
@@ -124,7 +130,8 @@ class AirlinesPage(BasePage):
                 airline["id"],
                 airline["company_name"],
                 airline["country"],
-                formatted_created_at
+                formatted_created_at,
+                "Edit"
             ))
 
     def fetch_airlines(self):
@@ -147,3 +154,54 @@ class AirlinesPage(BasePage):
     def on_new_airline_click(self):
         """Handle new airline button click"""
         self.navigation_callback("add_new_airline")
+    
+    def on_edit_click(self, airline):
+        """Handle edit action"""
+        print(f"Editing airline: {airline['id']}")  # Debug print
+        # Pass the airline data as part of the route data
+        self.navigation_callback({
+            "route": "edit_airline",
+            "data": airline
+    })
+
+    def on_row_double_click(self, event):
+        """Handle double-click on any row"""
+        item = self.tree.identify('item', event.x, event.y)
+        if item:
+            values = self.tree.item(item)['values']
+            if values:
+                airline = next(
+                    (f for f in self.airlines if f["id"] == values[0]),
+                    None
+                )
+                if airline:
+                    self.navigation_callback({
+                        "route": "edit_airline",
+                        "data": airline
+                    })
+                    
+    def handle_click(self, event):
+        """Handle click events on the table"""
+        region = self.tree.identify("region", event.x, event.y)
+        if region == "cell":
+            column = self.tree.identify_column(event.x)
+            item = self.tree.identify_row(event.y)
+
+        if region == "cell":
+            column = self.tree.identify_column(event.x)
+            item = self.tree.identify_row(event.y)
+
+            if column == "#8":  # Action column
+                values = self.tree.item(item)['values']
+                if values:
+                    airline = next(
+                        (f for f in self.airlines if f["id"] == values[0]),
+                        None
+                    )
+                    if airline:
+                        print("DEBUG: Double-click on airline:",
+                              airline)  # Debug print
+                        self.navigation_callback({
+                            "route": "edit_airline",
+                            "data": airline
+                        })
