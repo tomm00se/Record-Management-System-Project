@@ -144,14 +144,17 @@ class EditFlightPage(BasePage):
         """Handle save button click"""
         
         new_flight = {
+            "id": self.flight_data["id"],
+            "type": "Flight",
             "client": self.client.get(),
             "airline": self.airline.get(),
             "departure": self.from_city.get(),
             "destination": self.to_city.get(),
             "depart_date": self.depart_date.get(),
             "return_date": self.return_date.get(),
+            "created_at": self.flight_data["created_at"]
         }
         
-        self.record_manager.add_record("flight", new_flight)
+        self.record_manager.update_record("flight", new_flight["id"], new_flight)
         
         self.navigation_callback("flights")
