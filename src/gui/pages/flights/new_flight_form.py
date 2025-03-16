@@ -48,9 +48,9 @@ class NewFlightForm(BasePage):
         from_frame = ctk.CTkFrame(cities_frame, fg_color="transparent")
         from_frame.pack(side="left", fill="x", expand=True, padx=(0, 10))
         self.create_field(from_frame, "From", True)
-        self.from_city = ctk.CTkOptionMenu(
+        self.from_city = ctk.CTkEntry(
             from_frame,
-            values=["Hong Kong", "London"]
+            placeholder_text="Enter departure city"
         )
         self.from_city.pack(fill="x")
 
@@ -58,9 +58,9 @@ class NewFlightForm(BasePage):
         to_frame = ctk.CTkFrame(cities_frame, fg_color="transparent")
         to_frame.pack(side="left", fill="x", expand=True)
         self.create_field(to_frame, "To", True)
-        self.to_city = ctk.CTkOptionMenu(
+        self.to_city = ctk.CTkEntry(
             to_frame,
-            values=["London", "Hong Kong"]
+            placeholder_text="Enter destination city"
         )
         self.to_city.pack(fill="x")
 
