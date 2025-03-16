@@ -5,7 +5,7 @@ from src.data.record_manager import RecordManager
 
 class NewFlightForm(BasePage):
     """New Flight Form Class"""
-    def __init__(self, parent, navigation_callback, record_manager):
+    def __init__(self, parent, navigation_callback, record_manager:RecordManager):
         super().__init__(parent, navigation_callback)
         self.record_manager = record_manager
 
