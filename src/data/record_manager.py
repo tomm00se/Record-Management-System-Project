@@ -107,7 +107,7 @@ class RecordManager:
             raise ValueError(f"Record type '{record_type}' is not supported.")
         
         for i, record in enumerate(self.records[record_type]):
-            if int(record['id']) == record_id:
+            if record['id'] == record_id:
                 self.records[record_type][i] = updated_record
                 self.save_records()
                 return
