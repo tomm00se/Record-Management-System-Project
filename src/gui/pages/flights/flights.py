@@ -3,21 +3,20 @@ Flights Page Class
 
 Contains the Flights Records Table as the main content.
 """
-import tkinter as tk
 from tkinter import ttk
 import customtkinter as ctk
-from pages.base import BasePage
+from ..base import BasePage
+
 
 class FlightsPage(BasePage):
     """ Flights Page Class """
 
-    def __init__(self, parent):
-        super().__init__(parent)  # Initialize the base page first
+    def __init__(self, parent, navigation_callback):
+        super().__init__(parent, navigation_callback)  # Initialize the base page first
 
         # Initialize attributes first
         self.flights = []  # Initialize flights list
         self.tree = None   # Initialize tree
-
 
         # Create page header using base method
         self.create_header(
@@ -44,6 +43,87 @@ class FlightsPage(BasePage):
         """Hide loading indicator"""
         if hasattr(self, 'loading_label'):
             self.loading_label.destroy()
+
+    def setup_content(self):
+        """Setup the main content of the flights page"""
+        try:
+            # Add New Flight Button
+            self.create_action_buttons()
+
+            # Create Table
+            self.create_flight_table()
+        except Exception as e:
+            print(f"Error setting up content: {e}")
+
+    def create_action_buttons(self):
+        """Create action buttons like 'New Flight'"""
+        button_frame = ctk.CTkFrame(
+            self.content_frame,
+            fg_color="transparent"
+        )
+        button_frame.pack(fill="x", padx=10, pady=(0, 10))
+
+        new_flight_btn = ctk.CTkButton(
+            button_frame,
+            text="+ New Flight",
+            command=self.on_new_flight_click
+        )
+        new_flight_btn.pack(side="right")
+
+    def create_flight_table(self):
+        """Create the flights table"""
+        # Create a frame to hold both table and scrollbar
+        table_frame = ctk.CTkFrame(self.content_frame, fg_color="transparent")
+        table_frame.pack(fill="both", expand=True, padx=0, pady=0)
+
+        # Table Columns
+        columns = ("ID", "Client", "Airline", "From", "To",
+                   "Depart On", "Created On", "Action")
+
+        # Initialize and configure Treeview
+        self.tree = ttk.Treeview(
+            table_frame,
+            columns=columns,
+            show="headings"
+        )
+
+        # Configure column headings and widths
+        for col in columns:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=150)
+
+        # Create scrollbar first
+        scrollbar = ttk.Scrollbar(
+            self.content_frame,
+            orient="vertical",
+            command=self.tree.yview
+        )
+        self.tree.configure(yscrollcommand=scrollbar.set)
+
+        # Pack scrollbar and tree
+        scrollbar.pack(side="right", fill="y")
+        self.tree.pack(fill="both", expand=True, padx=10, pady=10)
+
+        # Insert the sample data
+        self.populate_table()
+
+    def populate_table(self):
+        """Populate table with flight data"""
+        # Clear existing items
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+
+        # Add data to table
+        for flight in self.flights:
+            self.tree.insert("", "end", values=(
+                flight["id"],
+                flight["client"],
+                flight["airline"],
+                flight["departure"],
+                flight["destination"],
+                flight["depart_date"],
+                flight["created_date"]
+            ))
 
     def fetch_flights(self):
         """
@@ -76,102 +156,11 @@ class FlightsPage(BasePage):
             print(f"Error fetching flights: {e}")
             self.flights = []
 
-    def setup_content(self):
-        """Setup the main content of the flights page"""
-        try:
-            # Add New Flight Button
-            self.create_action_buttons()
-
-            # Create Table
-            self.create_flight_table()
-        except Exception as e:
-            print(f"Error setting up content: {e}")
-
-    def create_action_buttons(self):
-        """Create action buttons like 'New Flight'"""
-        button_frame = ctk.CTkFrame(
-            self.content_frame,
-            fg_color="transparent"
-            )
-        button_frame.pack(fill="x", padx=10, pady=(0, 10))
-
-        new_flight_btn = ctk.CTkButton(
-            button_frame,
-            text="+ New Flight",
-            command=self.on_new_flight_click
-        )
-        new_flight_btn.pack(side="right")
-
-    def create_flight_table(self):
-        """Create the flights table"""
-        # # Create a frame to hold both table and scrollbar
-        # table_frame = ctk.CTkFrame(self.content_frame, fg_color="transparent")
-        # table_frame.pack(fill="both", expand=True, padx=0, pady=0)
-    
-        # Table Columns
-        columns = ("ID", "Client", "Airline", "From", "To",
-                   "Depart On", "Created On", "Action")
-
-        # Initialize and configure Treeview
-        self.tree = ttk.Treeview(
-            self.content_frame,
-            columns=columns,
-            show="headings"
-        )
-
-        # Configure column headings and widths
-        for col in columns:
-            self.tree.heading(col, text=col)
-            self.tree.column(col, width=150)
-
-        # Create scrollbar first
-        scrollbar = ttk.Scrollbar(
-            self.content_frame,
-            orient="vertical",
-            command=self.tree.yview
-        )
-        self.tree.configure(yscrollcommand=scrollbar.set)
-
-        # Pack scrollbar and tree
-        scrollbar.pack(side="right", fill="y")
-        self.tree.pack(fill="both", expand=True, padx=10, pady=10)
-
-        # Add the fetched data to the table
-        if hasattr(self, 'flights'):
-            for flight in self.flights:
-                self.tree.insert("", "end", values=(
-                    flight["id"],
-                    flight["client"],
-                    flight["airline"],
-                    flight["departure"],
-                    flight["destination"],
-                    flight["depart_date"],
-                    flight["created_date"],
-                ))
-
     def refresh_flights(self):
-        """Refresh the flights table with new data"""
-        if self.tree:
-            # Clear existing items
-            for item in self.tree.get_children():
-                self.tree.delete(item)
-
-            # Fetch new data
-            self.fetch_flights()
-
-            # Populate table with new data
-            for flight in self.flights:
-                self.tree.insert("", "end", values=(
-                    flight["id"],
-                    flight["client"],
-                    flight["airline"],
-                    flight["departure"],
-                    flight["destination"],
-                    flight["depart_date"],
-                    flight["created_date"],
-                ))
+        """Refresh the flights table"""
+        self.fetch_flights()
+        self.populate_table()
 
     def on_new_flight_click(self):
         """Handle new flight button click"""
-        # This will be implemented to show the flight form
-        print("New Flight clicked")
+        self.navigation_callback("addNewFlight")

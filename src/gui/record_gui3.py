@@ -8,6 +8,7 @@ from tkinter import ttk
 import customtkinter as ctk
 from PIL import Image
 from pages.flights import FlightsPage
+from pages.flights import NewFlightForm
 # from pages.clients import ClientsPage
 # from pages.airlines import AirlinesPage
 from components.sidebar import Sidebar
@@ -35,13 +36,13 @@ class RecordMgmtSystem:
         # Initialize GUI components
         self.create_menu()
 
-        # Initialize the sidebar with navigation callback
-        self.sidebar = Sidebar(self.root)
-        self.sidebar.on_navigate = self.handle_navigation  # Set navigation callback
-
         # Create main content area
         self.main_content = ctk.CTkFrame(self.root)
         self.main_content.pack(side="right", fill="both", expand=True)
+        
+        # Initialize the sidebar with navigation callback
+        self.sidebar = Sidebar(self.main_content, self.handle_navigation)
+        self.sidebar.on_navigate = self.handle_navigation  # Set navigation callback
 
         # Show default page (Flights)
         self.current_page = None
@@ -96,11 +97,15 @@ class RecordMgmtSystem:
         """Show the selected page"""
         # Clear current page if exists
         if self.current_page:
-            self.current_page.pack_forget()
+            self.current_page.destroy()
 
         # Show new page
         if page_name == "flights":
-            self.current_page = FlightsPage(self.main_content)
+            self.current_page = FlightsPage(
+                self.main_content, self.handle_navigation)
+        elif page_name == "addNewFlight":
+            self.current_page = NewFlightForm(
+                self.main_content, self.handle_navigation)
         # elif page_name == "clients":
         #     self.current_page = ClientsPage(self.main_content)
         # elif page_name == "airlines":
