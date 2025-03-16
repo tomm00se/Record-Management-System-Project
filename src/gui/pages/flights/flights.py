@@ -7,7 +7,6 @@ from tkinter import ttk
 import customtkinter as ctk
 from ..base import BasePage
 
-
 class FlightsPage(BasePage):
     """ Flights Page Class """
 
@@ -134,7 +133,8 @@ class FlightsPage(BasePage):
             # This is sample data - replace with your actual data fetching logic
             self.flights = [
                 {
-                    "id": "0001",
+                    "id": "F0001",
+                    "type": "Flight",
                     "client": "Leona Wong",
                     "airline": "Cathay Pacific Airways",
                     "departure": "Hong Kong",
@@ -143,7 +143,8 @@ class FlightsPage(BasePage):
                     "created_date": "09 Mar 2025 18:38"
                 },
                 {
-                    "id": "0002",
+                    "id": "F0002",
+                    "type": "Flight",
                     "client": "Leona Wong",
                     "airline": "Cathay Pacific Airways",
                     "departure": "London",
