@@ -1,208 +1,126 @@
-"""
-New Flight Form Module
-
-This module implements the form for adding new flight records.
-"""
-import sys
-import os
+"""New Flight Form Module"""
 import customtkinter as ctk
-from datetime import datetime
-from components.sidebar import Sidebar
+from ..base import BasePage
 
-class NewFlightForm:
-    """
-    Form for creating new flight records.
-    """
+class NewFlightForm(BasePage):
+    """New Flight Form Class"""
+    def __init__(self, parent, navigation_callback):
+        super().__init__(parent, navigation_callback)
 
-    def __init__(self, root, callback=None):
-        """
-        Initialize the new flight form.
-        
-        Args:
-            root: Main window
-            callback: Function to call after form submission
-        """
-        self.root = root
-        self.callback = callback
-        self.setup_form()
-
-    def setup_form(self):
-        """Create and configure the form layout."""
-        # Add sidebar
-        self.sidebar = Sidebar(self.root, active_btn="Flights")
-
-        # Main content frame
-        self.main_frame = ctk.CTkFrame(self.root)
-        self.main_frame.pack(side="right", fill="both",
-                             expand=True, padx=20, pady=20)
-
-        # Header
-        self.create_header()
-
-        # Form fields
-        self.create_form_fields()
-
-        # Buttons
-        self.create_buttons()
-
-    def create_header(self):
-        """Create form header with title and description."""
-        title = ctk.CTkLabel(
-            self.main_frame,
-            text="Add New Flight",
-            font=("Arial", 24, "bold")
+        # Create header
+        self.create_header(
+            "Add New Flight",
+            "Please enter the flight details below"
         )
-        title.pack(anchor="w", pady=(0, 10))
 
-        description = ctk.CTkLabel(
-            self.main_frame,
-            text="Please select the client and enter the travel details to create the flight record",
-            font=("Arial", 13)
-        )
-        description.pack(anchor="w", pady=(0, 20))
+        # Create form
+        self.create_form()
 
-    def create_form_fields(self):
-        """Create and configure form input fields."""
+    def create_form(self):
+        """Create the form for adding a new flight"""
+        # Form container
+        form_frame = ctk.CTkFrame(self.content_frame, fg_color="transparent")
+        form_frame.pack(fill="both", expand=True)
+
+
         # Client Selection
-        self.create_field("Client", required=True)
-        self.client_dropdown = ctk.CTkOptionMenu(
-            self.main_frame,
-            values=["0001 Leona Wong\nw.wong12@liverpool.ac.uk"]
+        self.create_field(form_frame, "Client", True)
+        self.client = ctk.CTkEntry(
+            form_frame,
+            placeholder_text="Enter client name"  # This shows helper text when empty
         )
-        self.client_dropdown.pack(fill="x", pady=(0, 15))
+        self.client.pack(fill="x", pady=(0, 15))
 
-        # Airlines Selection
-        self.create_field("Airlines", required=True)
-        self.airline_dropdown = ctk.CTkOptionMenu(
-            self.main_frame,
+        # Airline Selection
+        self.create_field(form_frame, "Airline", True)
+        self.airline = ctk.CTkOptionMenu(
+            form_frame,
             values=["Cathay Pacific Airways"]
         )
-        self.airline_dropdown.pack(fill="x", pady=(0, 15))
+        self.airline.pack(fill="x", pady=(0, 15))
 
-        # Create a frame for ticket type and cities
-        details_frame = ctk.CTkFrame(self.main_frame)
-        details_frame.pack(fill="x", pady=(0, 15))
+        # Cities Frame
+        cities_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
+        cities_frame.pack(fill="x", pady=(0, 15))
 
-        # Ticket Type
-        type_frame = ctk.CTkFrame(details_frame)
-        type_frame.pack(side="left", fill="x", expand=True, padx=(0, 10))
-        self.create_field("Ticket Type", required=True, parent=type_frame)
-        self.ticket_type = ctk.CTkOptionMenu(
-            type_frame,
-            values=["One-Way", "Return"]
+        # From City (Start City)
+        from_frame = ctk.CTkFrame(cities_frame, fg_color="transparent")
+        from_frame.pack(side="left", fill="x", expand=True, padx=(0, 10))
+        self.create_field(from_frame, "From", True)
+        self.from_city = ctk.CTkOptionMenu(
+            from_frame,
+            values=["Hong Kong", "London"]
         )
-        self.ticket_type.pack(fill="x")
+        self.from_city.pack(fill="x")
 
-        # Cities
-        cities_frame = ctk.CTkFrame(details_frame)
-        cities_frame.pack(side="left", fill="x", expand=True, padx=10)
-        self.create_field("Start City", required=True, parent=cities_frame)
-        self.start_city = ctk.CTkOptionMenu(
-            cities_frame,
-            values=["Hong Kong"]
+        # To City (End City)
+        to_frame = ctk.CTkFrame(cities_frame, fg_color="transparent")
+        to_frame.pack(side="left", fill="x", expand=True)
+        self.create_field(to_frame, "To", True)
+        self.to_city = ctk.CTkOptionMenu(
+            to_frame,
+            values=["London", "Hong Kong"]
         )
-        self.start_city.pack(fill="x")
+        self.to_city.pack(fill="x")
 
-        end_city_frame = ctk.CTkFrame(details_frame)
-        end_city_frame.pack(side="left", fill="x", expand=True, padx=(10, 0))
-        self.create_field("End City", required=True, parent=end_city_frame)
-        self.end_city = ctk.CTkOptionMenu(
-            end_city_frame,
-            values=["London"]
-        )
-        self.end_city.pack(fill="x")
-
-        # Dates
-        dates_frame = ctk.CTkFrame(self.main_frame)
+        # Dates Frame
+        dates_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
         dates_frame.pack(fill="x", pady=(0, 15))
 
         # Depart Date
-        depart_frame = ctk.CTkFrame(dates_frame)
+        depart_frame = ctk.CTkFrame(dates_frame, fg_color="transparent")
         depart_frame.pack(side="left", fill="x", expand=True, padx=(0, 10))
-        self.create_field("Depart", required=True, parent=depart_frame)
+        self.create_field(depart_frame, "Depart Date", True)
         self.depart_date = ctk.CTkEntry(
             depart_frame,
-            placeholder_text="Select date"
+            placeholder_text="DD/MM/YYYY"
         )
         self.depart_date.pack(fill="x")
 
         # Return Date
-        return_frame = ctk.CTkFrame(dates_frame)
-        return_frame.pack(side="left", fill="x", expand=True, padx=(10, 0))
-        self.create_field("Return", parent=return_frame)
+        return_frame = ctk.CTkFrame(dates_frame, fg_color="transparent")
+        return_frame.pack(side="left", fill="x", expand=True)
+        self.create_field(return_frame, "Return Date")
         self.return_date = ctk.CTkEntry(
             return_frame,
-            placeholder_text="Select date"
+            placeholder_text="DD/MM/YYYY"
         )
         self.return_date.pack(fill="x")
 
-    def create_buttons(self):
-        """Create form submission buttons."""
-        button_frame = ctk.CTkFrame(self.main_frame)
+        # Buttons
+        button_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
         button_frame.pack(fill="x", pady=(20, 0))
 
+        # Cancel Button
         ctk.CTkButton(
             button_frame,
             text="Cancel",
-            command=self.cancel,
+            command=self.on_cancel,
             fg_color="#E5E5EA",
             text_color="#000000"
         ).pack(side="left", padx=(0, 10))
 
+        # Save Button
         ctk.CTkButton(
             button_frame,
-            text="Save",
-            command=self.save
+            text="Save Flight",
+            command=self.on_save
         ).pack(side="left")
 
-    def create_field(self, label, required=False, parent=None):
-        """
-        Create a form field label.
-        
-        Args:
-            label (str): Field label text
-            required (bool): Whether field is required
-            parent: Parent widget for the label
-        """
-        if parent is None:
-            parent = self.main_frame
-
+    def create_field(self, parent, label, required=False):
+        """Create form field label"""
         label_text = f"{label} {'*' if required else ''}"
         ctk.CTkLabel(
             parent,
             text=label_text,
-            font=("Helvetica", 13)
-        ).pack(anchor="w")
+            font=("Arial", 13)
+        ).pack(anchor="w", pady=(0, 5))
 
-    def cancel(self):
-        """Handle form cancellation."""
-        if self.callback:
-            self.callback("cancel")
+    def on_cancel(self):
+        """Handle cancel button click"""
+        self.navigation_callback("flights")
 
-    def save(self):
-        """Handle form submission."""
-        # Implement save logic here
-        if self.callback:
-            self.callback("save")
-
-    def run(self):
-        """
-        Start the application's main event loop.
-    
-        This method initiates the GUI application and handles all user interactions
-        until the application is closed.
-        """
-        self.root.mainloop()
-
-
-if __name__ == "__main__":
-    root = ctk.CTk()  # Create the root window
-    root.title("Add New Flight")
-    root.geometry("1280x768")
-
-    # Set appearance mode and color theme
-    ctk.set_appearance_mode("light")
-    ctk.set_default_color_theme("blue")
-
-    app = NewFlightForm(root=root)  # Pass the root window
-    app.run()
+    def on_save(self):
+        """Handle save button click"""
+        # Add validation and save logic
+        self.navigation_callback("flights")

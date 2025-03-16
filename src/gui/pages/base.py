@@ -8,25 +8,26 @@ import customtkinter as ctk
 # from PIL import Image
 # from .components.sidebar import Sidebar
 
+
 class BasePage(ctk.CTkFrame):
     """
     Base page class that all pages will inherit from
     """
-    def __init__(self, parent):
+    def __init__(self, parent, navigation_callback):
         super().__init__(parent)
         self.parent = parent
+        self.navigation_callback = navigation_callback
         # Make the base page fill its parent
         self.pack(fill="both", expand=True)
-        
+
         # Initialize the Header Frame
         self.header_frame = ctk.CTkFrame(
             self,
             fg_color="transparent",  # Background color
             corner_radius=0    # No rounded corners
         )
-        
         self.header_frame.pack(fill="x", padx=20, pady=(20, 10))
-        
+
         # Initialize the Content Frame
         self.content_frame = ctk.CTkFrame(
             self,
@@ -34,10 +35,6 @@ class BasePage(ctk.CTkFrame):
             corner_radius=0    # No rounded corners
         )
         self.content_frame.pack(fill="both", expand=True)
-
-        # Common attributes all pages might need
-        self.current_form = None
-        self.current_view = None
 
     def show_loading(self):
         """Show loading indicator"""
@@ -83,4 +80,4 @@ class BasePage(ctk.CTkFrame):
                 text=description,
                 font=("Arial", 13)
             )
-            desc_label.pack(side="left", padx=(20, 0))
+            desc_label.pack(side="bottom", padx=(20, 0))
