@@ -8,12 +8,14 @@ import customtkinter as ctk
 from src.gui.pages.base import BasePage
 from src.gui.components.search import Search
 from src.gui.components.utility import DateFormatter
+from src.data.record_manager import RecordManager
 
 class FlightsPage(BasePage):
     """ Flights Page Class """
 
-    def __init__(self, parent, navigation_callback):
+    def __init__(self, parent, navigation_callback, record_manager: RecordManager):
         super().__init__(parent, navigation_callback)  # Initialize the base page first
+        self.record_manager = record_manager
 
         # Initialize attributes first
         self.flights = []  # Initialize flights list
@@ -30,6 +32,7 @@ class FlightsPage(BasePage):
 
         # Create main content
         self.setup_content()
+        
 
     def fetch_flights(self):
         """
@@ -37,39 +40,7 @@ class FlightsPage(BasePage):
         For now, using sample data
         """
         try:
-            # This is sample data - replace with your actual data fetching logic
-            self.flights = [
-                {
-                    "id": "F0001",
-                    "type": "Flight",
-                    "client": "Leona Wong",
-                    "airline": "Cathay Pacific Airways",
-                    "departure": "Hong Kong",
-                    "destination": "London",
-                    "depart_date": "10 Apr 2025",
-                    "created_date": "2024-03-15T10:30:00Z"
-                },
-                {
-                    "id": "F0002",
-                    "type": "Flight",
-                    "client": "Leona Wong",
-                    "airline": "Cathay Pacific Airways",
-                    "departure": "London",
-                    "destination": "Hong Kong",
-                    "depart_date": "30 Apr 2025",
-                    "created_date": "2024-03-15T10:30:00Z"
-                },
-                {
-                    "id": "F0003",
-                    "type": "Flight",
-                    "client": "Tommy Bowden",
-                    "airline": "British Airways",
-                    "departure": "London",
-                    "destination": "Hong Kong",
-                    "depart_date": "28 Apr 2025",
-                    "created_date": "2024-03-16T10:30:00Z"
-                }
-            ]
+            self.flights = self.record_manager.records["flight"]
         except Exception as e:
             print(f"Error fetching flights: {e}")
             self.flights = []
@@ -149,8 +120,8 @@ class FlightsPage(BasePage):
 
         # Add data to table
         for flight in self.flights:
-            formatted_created_date = DateFormatter.to_display_format(
-                flight["created_date"])
+            formatted_created_at = DateFormatter.to_display_format(
+                flight["created_at"])
 
             # Insert row with values
             item_id = self.tree.insert("", "end", values=(
@@ -160,7 +131,7 @@ class FlightsPage(BasePage):
                 flight["departure"],
                 flight["destination"],
                 flight["depart_date"],
-                formatted_created_date,
+                formatted_created_at,
                 "Edit"  # Using edit symbol instead of button
             ))
 
@@ -184,8 +155,8 @@ class FlightsPage(BasePage):
 
         if matched_flights:
             for flight in matched_flights:
-                formatted_created_date = DateFormatter.to_display_format(
-                    flight["created_date"])
+                formatted_created_at = DateFormatter.to_display_format(
+                    flight["created_at"])
 
                 # Insert row
                 item_id = self.tree.insert("", "end", values=(
@@ -195,7 +166,7 @@ class FlightsPage(BasePage):
                     flight["departure"],
                     flight["destination"],
                     flight["depart_date"],
-                    formatted_created_date,
+                    formatted_created_at,
                     "Edit"  # Simple text for edit action
                 ))
 
@@ -203,7 +174,11 @@ class FlightsPage(BasePage):
                 self.tree.tag_bind(item_id, 'edit_action',
                                    lambda e, f=flight: self.on_edit_click(f))
         else:
-            self.show_no_results()
+            # Show no results found
+            self.tree.insert("", "end", values=(
+                "",
+                "No results found",
+            ))
 
     # Helper Methods
     def show_loading(self):
