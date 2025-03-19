@@ -17,17 +17,22 @@ Version: 1.0
 Created Date: 16 March 2025
 """
 import sys
+import os
 from os.path import dirname, abspath, join
 import tkinter as tk
 import customtkinter as ctk
 from src.gui.pages.flights import FlightsPage
 from src.gui.pages.flights import NewFlightForm
 from src.gui.pages.flights import EditFlightPage
-from src.gui.pages.clients import ClientsPage
-from src.gui.pages.clients import NewClientForm
+from src.gui.pages.clients.clients import ClientsPage
+from src.gui.pages.clients.add_new_client import NewClientForm
+from src.gui.pages.clients.edit_clients import EditClientPage
 from src.gui.pages.airlines import AirlinesPage
 from src.gui.pages.airlines import NewAirlineForm
+from src.gui.pages.airlines.edit_airlines import EditAirlinePage
 from src.gui.components.sidebar import Sidebar
+from src.data.record_manager import RecordManager
+from Foundation import NSBundle
 
 # Add the parent directory to the system path
 sys.path.append(abspath(join(dirname(__file__), '..')))
@@ -51,6 +56,8 @@ class RecordMgmtSystem:
         ctk.set_appearance_mode("light")
         ctk.set_default_color_theme("blue")
         
+        self.record_manager = RecordManager(data_folder="src/record", file_format="json")
+        
         # Initialize GUI components
         self.create_menu()
 
@@ -70,7 +77,6 @@ class RecordMgmtSystem:
         """Configure macOS settings for the application."""
         if sys.platform == "darwin":  # macOS
             try:
-                from Foundation import NSBundle
                 bundle = NSBundle.mainBundle()
                 info = bundle.localizedInfoDictionary() or bundle.infoDictionary()
                 info['CFBundleName'] = "Record Management System"
@@ -116,29 +122,41 @@ class RecordMgmtSystem:
         # Clear current page if exists
         if self.current_page:
             self.current_page.destroy()
+            
+        record_data = None
+        if isinstance(page_name, dict):
+            record_data = page_name.get('data')
+            page_name = page_name.get('route')
 
         # Show new page
         if page_name == "flights":
             self.current_page = FlightsPage(
-                self.main_content, self.handle_navigation)
+                self.main_content, self.handle_navigation, self.record_manager)
         elif page_name == "add_new_flight":
             self.current_page = NewFlightForm(
-                self.main_content, self.handle_navigation)
+                self.main_content, self.handle_navigation, self.record_manager)
         elif page_name == "edit_flight":
             self.current_page = EditFlightPage(
-                self.main_content, self.handle_navigation)
+                self.main_content, self.handle_navigation, self.record_manager, record_data)
         elif page_name == "clients":
             self.current_page = ClientsPage(
-                self.main_content, self.handle_navigation)
+                self.main_content, self.handle_navigation, self.record_manager)
         elif page_name == "add_new_client":
             self.current_page = NewClientForm(
-                self.main_content, self.handle_navigation)
+                self.main_content, self.handle_navigation, self.record_manager)
+        elif page_name == "edit_client":
+            self.current_page = EditClientPage(
+                self.main_content, self.handle_navigation, self.record_manager, record_data)
         elif page_name == "airlines":
             self.current_page = AirlinesPage(
-                self.main_content, self.handle_navigation)
+                self.main_content, self.handle_navigation, self.record_manager)
         elif page_name == "add_new_airline":
             self.current_page = NewAirlineForm(
-                self.main_content, self.handle_navigation)
+                self.main_content, self.handle_navigation, self.record_manager)
+        elif page_name == "edit_airline":
+            self.current_page = EditAirlinePage(
+                self.main_content, self.handle_navigation, self.record_manager, record_data)
+
 
         self.current_page.pack(fill="both", expand=True)
 
