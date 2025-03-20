@@ -15,7 +15,7 @@ class TestRecordMgmtSystem(unittest.TestCase):
     def test_initialization(self):
         """Test that the application initializes with correct settings."""
         self.assertEqual(self.root.title(), "Record Management System")
-        self.assertEqual(self.root.geometry(), "1280x768        # Test if main content and sidebar exist
+        self.assertEqual(self.root.geometry(), "1280x768")  # Test if main content and sidebar exist
         self.assertIsNotNone(self.app.main_content)
         self.assertIsNotNone(self.app.sidebar)
 
