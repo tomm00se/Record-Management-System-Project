@@ -5,15 +5,19 @@ Contains the Airlines Records Table as the main content.
 """
 from tkinter import ttk
 import customtkinter as ctk
-from components.utitlity import DateFormatter
-from ..base import BasePage
+from src.gui.components.utility import DateFormatter
+from src.gui.pages.base import BasePage
+from src.data.record_manager import RecordManager
+from src.gui.components.search import Search
 
 class AirlinesPage(BasePage):
     """ Airlines Page Class """
 
-    def __init__(self, parent, navigation_callback):
+    def __init__(self, parent, navigation_callback, record_manager: RecordManager):
         super().__init__(parent, navigation_callback)  # Initialize the base page first
 
+        self.record_manager = record_manager
+        
         # Initialize attributes first
         self.airlines = []  # Initialize airlines list
         self.tree = None   # Initialize tree
@@ -49,6 +53,14 @@ class AirlinesPage(BasePage):
         try:
             # Add New Client Button
             self.create_action_buttons()
+            
+            # Add Search Bar
+            self.search_frame = Search(
+                self.content_frame,
+                search_placeholder="Search by Airline Name",
+                search_callback=self.handle_search
+            )
+            self.search_frame.pack(fill="x", padx=10, pady=(0, 10))
 
             # Create Table
             self.create_airline_table()
@@ -103,6 +115,12 @@ class AirlinesPage(BasePage):
         # Pack scrollbar and tree
         scrollbar.pack(side="right", fill="y")
         self.tree.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        # Bind double-click event
+        self.tree.bind('<Double-1>', self.on_row_double_click)
+
+        #Bind click event for the Action column
+        self.tree.bind('<Button-1>', self.handle_click)
 
         # Insert the sample data
         self.populate_table()
@@ -115,13 +133,52 @@ class AirlinesPage(BasePage):
 
         # Add data to table
         for airline in self.airlines:
-            formatted_created_date = DateFormatter.to_display_format(
-                airline["created_date"])
+            formatted_created_at = DateFormatter.to_display_format(
+                airline["created_at"])
             self.tree.insert("", "end", values=(
                 airline["id"],
                 airline["company_name"],
                 airline["country"],
-                formatted_created_date
+                formatted_created_at,
+                "Edit"
+            ))
+            
+    def handle_search(self, search_text):
+        """Handle search callback from SearchFrame"""
+        search_text = search_text.lower()
+
+        # Clear existing items
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+
+        # Filter and display matching flights
+        matched_airlines = [
+            airline for airline in self.airlines
+            if search_text in airline["company_name"].lower()
+        ]
+
+        if matched_airlines:
+            for airline in matched_airlines:
+                formatted_created_at = DateFormatter.to_display_format(
+                    airline["created_at"])
+
+                # Insert row
+                item_id = self.tree.insert("", "end", values=(
+                    airline["id"],
+                    airline["company_name"],
+                    airline["country"],
+                    formatted_created_at,
+                    "Edit"
+                ))
+
+                # Place button in the last column
+                self.tree.tag_bind(item_id, 'edit_action',
+                                   lambda e, f=airline: self.on_edit_click(f))
+        else:
+            # Show no results found
+            self.tree.insert("", "end", values=(
+                "",
+                "No results found",
             ))
 
     def fetch_airlines(self):
@@ -131,22 +188,7 @@ class AirlinesPage(BasePage):
         """
         try:
             # This is sample data - replace with your actual data fetching logic
-            self.airlines = [
-                {
-                    "id": "A0001",
-                    "type": "Airline",
-                    "company_name": "Cathay Pacific Airways",
-                    "country": "Hong Kong",
-                    "created_date": "2025-03-01T00:00:00Z"
-                },
-                {
-                    "id": "A0002",
-                    "type": "Airline",
-                    "company_name": "British Airways",
-                    "country": "United Kingdom",
-                    "created_date": "2025-03-01T00:00:00Z"
-                }
-            ]
+            self.airlines = self.record_manager.records["airline"]
         except Exception as e:
             print(f"Error fetching airlines: {e}")
             self.airlines = []
@@ -159,3 +201,54 @@ class AirlinesPage(BasePage):
     def on_new_airline_click(self):
         """Handle new airline button click"""
         self.navigation_callback("add_new_airline")
+    
+    def on_edit_click(self, airline):
+        """Handle edit action"""
+        print(f"Editing airline: {airline['id']}")  # Debug print
+        # Pass the airline data as part of the route data
+        self.navigation_callback({
+            "route": "edit_airline",
+            "data": airline
+    })
+
+    def on_row_double_click(self, event):
+        """Handle double-click on any row"""
+        item = self.tree.identify('item', event.x, event.y)
+        if item:
+            values = self.tree.item(item)['values']
+            if values:
+                airline = next(
+                    (f for f in self.airlines if f["id"] == values[0]),
+                    None
+                )
+                if airline:
+                    self.navigation_callback({
+                        "route": "edit_airline",
+                        "data": airline
+                    })
+                    
+    def handle_click(self, event):
+        """Handle click events on the table"""
+        region = self.tree.identify("region", event.x, event.y)
+        if region == "cell":
+            column = self.tree.identify_column(event.x)
+            item = self.tree.identify_row(event.y)
+
+        if region == "cell":
+            column = self.tree.identify_column(event.x)
+            item = self.tree.identify_row(event.y)
+
+            if column == "#8":  # Action column
+                values = self.tree.item(item)['values']
+                if values:
+                    airline = next(
+                        (f for f in self.airlines if f["id"] == values[0]),
+                        None
+                    )
+                    if airline:
+                        print("DEBUG: Double-click on airline:",
+                              airline)  # Debug print
+                        self.navigation_callback({
+                            "route": "edit_airline",
+                            "data": airline
+                        })

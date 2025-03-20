@@ -1,27 +1,29 @@
-"""New Airline Form Module"""
 import customtkinter as ctk
-# from src.gui.components.select_fields import SelectCountry
 from src.gui.pages.base import BasePage
 from src.data.record_manager import RecordManager
 
-class NewAirlineForm(BasePage):
-    """New Airline Form Class"""
-    def __init__(self, parent, navigation_callback, record_manager: RecordManager):
+
+class EditAirlinePage(BasePage):
+    """Edit Airline Update Form Class"""
+
+    def __init__(self, parent, navigation_callback, record_manager: RecordManager, client_data=None):
+        self.record_manager = record_manager
+        
         super().__init__(parent, navigation_callback)
         
-        self.record_manager = record_manager
+        self.client_data = client_data
 
         # Create header
         self.create_header(
-            "Add New Airline",
-            "Please enter the airline information"
+            "Add New Client",
+            "Please enter the client information"
         )
 
         # Create form
         self.create_form()
 
     def create_form(self):
-        """Create the form for adding a new airline"""
+        """Create form for adding a new airline"""
         # Form container
         form_frame = ctk.CTkFrame(self.content_frame, fg_color="transparent")
         form_frame.pack(fill="both", expand=True, padx=15, pady=15)
@@ -34,6 +36,7 @@ class NewAirlineForm(BasePage):
             placeholder_text="Enter Airline Company Name"
         )
         self.name.pack(fill="x", pady=(0, 15))
+        self.name.insert(0, self.client_data["company_name"])
 
         # Country
         self.create_field(form_frame, "Country", True)
@@ -42,6 +45,7 @@ class NewAirlineForm(BasePage):
             placeholder_text="Enter country"
         )
         self.country.pack(fill="x", pady=(0, 15))
+        self.country.insert(0, self.client_data["country"])
 
         # Buttons
         button_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
@@ -62,6 +66,18 @@ class NewAirlineForm(BasePage):
             text="Save",
             command=self.on_save
         ).pack(side="left")
+        
+        button_frame_delete = ctk.CTkFrame(form_frame, fg_color="transparent")
+        button_frame_delete.pack(fill="x", pady=(20, 0))
+
+        # Delete Button
+        ctk.CTkButton(
+            button_frame_delete,
+            text="Delete",
+            command=self.on_delete,
+            fg_color="#FF3B30",
+            text_color="#FFFFFF"
+        ).pack(side="left", padx=(0, 10))
 
     def create_field(self, parent, label, required=False):
         """Create form field label"""
@@ -85,6 +101,12 @@ class NewAirlineForm(BasePage):
             "country": self.country.get()
         }
         
-        self.record_manager.add_record("airline", new_airline)
+        self.record_manager.update_record("client", new_airline["id"], new_airline)
+
+        self.navigation_callback("airlines")
+        
+    def on_delete(self):
+        """Handle delete button click"""
+        self.record_manager.delete_record("client", self.client_data["id"])
         
         self.navigation_callback("airlines")

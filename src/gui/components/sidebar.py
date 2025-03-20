@@ -90,11 +90,11 @@ class Sidebar:
 
         # Load icons
         icon_flights = ctk.CTkImage(Image.open(
-            "../assets/icon_flights.png"), size=(32, 32))
+            "src/assets/icon_flights.png"), size=(32, 32))
         icon_clients = ctk.CTkImage(Image.open(
-            "../assets/icon_clients.png"), size=(32, 32))
+            "src/assets/icon_clients.png"), size=(32, 32))
         icon_airlines = ctk.CTkImage(Image.open(
-            "../assets/icon_airlines.png"), size=(32, 32))
+            "src/assets/icon_airlines.png"), size=(32, 32))
 
         # Create buttons
         self.flight_btn = SidebarButton(

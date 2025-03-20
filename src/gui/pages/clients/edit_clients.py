@@ -1,16 +1,17 @@
-"""New Client Form Module"""
 import customtkinter as ctk
 from src.gui.pages.base import BasePage
 from src.data.record_manager import RecordManager
 
 
-class NewClientForm(BasePage):
-    """New Client Form Class"""
+class EditClientPage(BasePage):
+    """Edit Client Update Form Class"""
 
-    def __init__(self, parent, navigation_callback, record_manager: RecordManager):
+    def __init__(self, parent, navigation_callback, record_manager: RecordManager, client_data=None):
+        self.record_manager = record_manager
+        
         super().__init__(parent, navigation_callback)
         
-        self.record_manager = record_manager
+        self.client_data = client_data
 
         # Create header
         self.create_header(
@@ -22,10 +23,8 @@ class NewClientForm(BasePage):
         self.create_form()
 
     def create_form(self):
-        """Create the form for adding a new client"""
+        """Create form for adding a new client"""
         # Form container with scrollable frame
-        # self.scroll_frame = ctk.CTkScrollableFrame(self.content_frame)
-        # self.scroll_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
         form_frame = ctk.CTkFrame(self.content_frame, fg_color="transparent")
         form_frame.pack(fill="both", expand=True, padx=15, pady=15)
@@ -37,6 +36,7 @@ class NewClientForm(BasePage):
             placeholder_text="Enter Client name"
         )
         self.name.pack(fill="x", pady=(0, 15))
+        self.name.insert(0, self.client_data["name"])
 
         # Address Section
         address_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
@@ -49,6 +49,7 @@ class NewClientForm(BasePage):
             placeholder_text="Address Line 1"
         )
         self.address_line1.pack(fill="x", pady=(0, 5))
+        self.address_line1.insert(0, self.client_data["address_line1"])
 
         # Address Line 2 (no label)
         self.address_line2 = ctk.CTkEntry(
@@ -56,6 +57,7 @@ class NewClientForm(BasePage):
             placeholder_text="Address Line 2"
         )
         self.address_line2.pack(fill="x", pady=(0, 5))
+        self.address_line2.insert(0, self.client_data["address_line2"])
 
         # Address Line 3 (no label)
         self.address_line3 = ctk.CTkEntry(
@@ -63,6 +65,7 @@ class NewClientForm(BasePage):
             placeholder_text="Address Line 3"
         )
         self.address_line3.pack(fill="x")
+        self.address_line3.insert(0, self.client_data["address_line3"])
 
         # Location Frame (City, State, Zip Code)
         location_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
@@ -77,6 +80,7 @@ class NewClientForm(BasePage):
             placeholder_text="Enter city"
         )
         self.city.pack(fill="x")
+        self.city.insert(0, self.client_data["city"])
 
         # State
         state_frame = ctk.CTkFrame(location_frame, fg_color="transparent")
@@ -87,6 +91,7 @@ class NewClientForm(BasePage):
             placeholder_text="Enter state"
         )
         self.state.pack(fill="x")
+        self.state.insert(0, self.client_data["state"])
 
         # Zip Code
         zip_frame = ctk.CTkFrame(location_frame, fg_color="transparent")
@@ -97,6 +102,7 @@ class NewClientForm(BasePage):
             placeholder_text="Enter zip code"
         )
         self.zip_code.pack(fill="x")
+        self.zip_code.insert(0, self.client_data["zip_code"])
 
         # Country
         self.create_field(form_frame, "Country", True)
@@ -105,6 +111,7 @@ class NewClientForm(BasePage):
             placeholder_text="Enter country"
         )
         self.country.pack(fill="x", pady=(0, 15))
+        self.country.insert(0, self.client_data["country"])
 
         # Contact Frame (Phone and Email)
         contact_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
@@ -119,6 +126,7 @@ class NewClientForm(BasePage):
             placeholder_text="Enter phone number"
         )
         self.phone.pack(fill="x")
+        self.phone.insert(0, self.client_data["phone"])
 
         # Email
         email_frame = ctk.CTkFrame(contact_frame, fg_color="transparent")
@@ -129,6 +137,7 @@ class NewClientForm(BasePage):
             placeholder_text="Enter email address"
         )
         self.email.pack(fill="x")
+        self.email.insert(0, self.client_data["email"])
 
         # Buttons
         button_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
@@ -149,6 +158,18 @@ class NewClientForm(BasePage):
             text="Save",
             command=self.on_save
         ).pack(side="left")
+        
+        button_frame_delete = ctk.CTkFrame(form_frame, fg_color="transparent")
+        button_frame_delete.pack(fill="x", pady=(20, 0))
+
+        # Delete Button
+        ctk.CTkButton(
+            button_frame_delete,
+            text="Delete",
+            command=self.on_delete,
+            fg_color="#FF3B30",
+            text_color="#FFFFFF"
+        ).pack(side="left", padx=(0, 10))
 
     def create_field(self, parent, label, required=False):
         """Create form field label"""
@@ -179,8 +200,12 @@ class NewClientForm(BasePage):
             "email": self.email.get()
         }
 
-        # Save client data to record manager
-        self.record_manager.add_record("client", new_client)
+        self.record_manager.update_record("client", new_client["id"], new_client)
 
-        # Navigate back to clients page
+        self.navigation_callback("clients")
+        
+    def on_delete(self):
+        """Handle delete button click"""
+        self.record_manager.delete_record("client", self.client_data["id"])
+        
         self.navigation_callback("clients")
