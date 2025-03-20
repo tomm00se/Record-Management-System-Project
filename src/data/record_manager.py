@@ -1,3 +1,8 @@
+"""
+Backend Module
+This module manages the records for clients, flights, and airline companies.
+It handles CRUD operations and ensures file persistence for data integrity.
+"""
 import datetime
 import os
 import json
