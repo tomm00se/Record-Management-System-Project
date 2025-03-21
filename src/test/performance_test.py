@@ -1,10 +1,20 @@
+"""
+Performance Test
+"""
+import os
+import sys
 import time
 import random
+
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.append(project_root)
+
 from src.data.record_manager import RecordManager
 
 class PerformanceTest:
-    def __init__(self, record_manager: RecordManager):
-        self.record_manager = record_manager
+    """Performance test class for benchmarking RecordManager operations."""
+    def __init__(self, manager: RecordManager):
+        self.record_manager = manager
 
     def generate_random_client(self):
         """Generate random client data."""

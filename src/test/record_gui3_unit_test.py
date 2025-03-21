@@ -1,5 +1,5 @@
 """ 
-Unit tests for record_gui3.py module
+GUI Unit Tests
 """
 import sys
 import os

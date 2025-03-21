@@ -1,12 +1,21 @@
+""" 
+Backend Operation Unit Tests
+"""
+import sys
+import os
 import unittest
 from unittest.mock import patch
 from datetime import datetime
 import random
-import string
+
+project_root = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.append(project_root)
+
 from src.data.record_manager import RecordManager  # Adjust the import as needed
 
 class TestRecordManager(unittest.TestCase):
-
+    """CRUD Test Cases"""
     def setUp(self):
         """Set up the initial conditions for each test."""
         self.record_manager = RecordManager(data_folder="mock_data", file_format="jsonl")
@@ -15,21 +24,47 @@ class TestRecordManager(unittest.TestCase):
         """Generate random client data."""
         return {
             "id": f"C{random.randint(1000, 9999)}",
+            "type": "Client",
             "name": f"Client_{random.choice(['A', 'B', 'C', 'D'])}{random.randint(1, 100)}",
             "email": f"client{random.randint(1, 100)}@example.com",
             "phone": f"+1{random.randint(1000000000, 9999999999)}",
+            "address_line1": f"{random.randint(1, 999)} {random.choice(['Main St', 'Park Ave', 'Broadway'])}",
+            "address_line2": f"Suite {random.randint(100, 999)}",
+            "address_line3": f"Floor {random.randint(1, 20)}",
+            "city": random.choice(['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix']),
+            "state": random.choice(['NY', 'CA', 'IL', 'TX', 'AZ']),
+            "zip_code": f"{random.randint(10000, 99999)}",
+            "country": random.choice(['United States', 'Canada', 'United Kingdom', 'Australia']),
             "created_at": datetime.now().isoformat()
         }
 
     def generate_random_flight(self):
-        """Generate random flight data."""
+        """Generate random flight data based on add_new_flight form fields."""
+
+        # Helper function for date format
+        def random_date():
+            day = str(random.randint(1, 28)).zfill(2)
+            month = str(random.randint(1, 12)).zfill(2)
+            year = str(random.randint(2023, 2024))
+            return f"{day}/{month}/{year}"
+
+        # List of sample cities
+        cities = ['New York', 'London', 'Tokyo', 'Paris', 'Dubai',
+              'Singapore', 'Hong Kong', 'Sydney', 'Toronto']
+        
+        # Generate two different cities
+        from_city, to_city = random.sample(cities, 2)
+        
         return {
             "id": f"F{random.randint(1000, 9999)}",
-            "airline_id": f"A{random.randint(100, 999)}",
-            "departure": f"City_{random.choice(['X', 'Y', 'Z'])}",
-            "destination": f"City_{random.choice(['A', 'B', 'C'])}",
-            "flight_date": datetime.now().isoformat(),
-            "status": random.choice(['on time', 'delayed', 'cancelled']),
+            "type": "Flight",
+            "client": f"Client_{random.choice(['A', 'B', 'C', 'D'])}{random.randint(1, 100)}",
+            "airline": f"{random.choice(['British Airways', 'Cathay Pacific Airways', 'Qantas Airways'])}",
+            "departure": from_city,
+            "destination": to_city,
+            "depart_date": random_date(),
+            # Optional return date
+            "return_date": random_date() if random.choice([True, False]) else "",
             "created_at": datetime.now().isoformat()
         }
 
@@ -37,8 +72,9 @@ class TestRecordManager(unittest.TestCase):
         """Generate random airline data."""
         return {
             "id": f"A{random.randint(100, 999)}",
-            "name": f"Airline_{random.choice(['X', 'Y', 'Z'])}",
-            "iata_code": ''.join(random.choices(string.ascii_uppercase, k=3)),
+            "type": "Airline",
+            "company_name": f"Airline_{random.choice(['X', 'Y', 'Z'])}",
+            "country": random.choice(['United States', 'Canada', 'United Kingdom', 'Australia']),
             "created_at": datetime.now().isoformat()
         }
 
