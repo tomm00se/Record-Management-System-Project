@@ -43,7 +43,7 @@ The repository supports the following:
 **🛫 Flight Records** <br/>
 - Able to add, update, and delete flight records with details, such as client name, flight schedule, departure, destination and associated airline
 
-**✈️ Client Records** <br/>
+**👥 Client Records** <br/>
 - Able to add, update, and delete client records with details, such as name and associated information
 
 **🏢 Airline Records** <br/>
@@ -123,7 +123,7 @@ Python 3.8 or higher is recommended.
 
 ## ✨ Contributors
 👨‍💻 Tommy Bowden <br/>
-👩‍💻 Wing Lam Leona Wong <br/>
+👩‍💻 Leona Wong <br/>
 👩‍💻 Sude Şimşek
 
 ## 📜 License
