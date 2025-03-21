@@ -12,13 +12,15 @@ project_root = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.append(project_root)
 
-from src.data.record_manager import RecordManager  # Adjust the import as needed
+from src.data.record_manager import RecordManager
 
 class TestRecordManager(unittest.TestCase):
     """CRUD Test Cases"""
+
     def setUp(self):
         """Set up the initial conditions for each test."""
-        self.record_manager = RecordManager(data_folder="mock_data", file_format="jsonl")
+        self.record_manager = RecordManager(
+            data_folder="mock_data", file_format="jsonl")
 
     def generate_random_client(self):
         """Generate random client data."""
@@ -50,11 +52,11 @@ class TestRecordManager(unittest.TestCase):
 
         # List of sample cities
         cities = ['New York', 'London', 'Tokyo', 'Paris', 'Dubai',
-              'Singapore', 'Hong Kong', 'Sydney', 'Toronto']
-        
+                  'Singapore', 'Hong Kong', 'Sydney', 'Toronto']
+
         # Generate two different cities
         from_city, to_city = random.sample(cities, 2)
-        
+
         return {
             "id": f"F{random.randint(1000, 9999)}",
             "type": "Flight",
@@ -103,7 +105,8 @@ class TestRecordManager(unittest.TestCase):
         updated_client['name'] = f"Updated_{random_client['name']}"
         updated_client['email'] = f"updated_{random_client['email']}"
 
-        self.record_manager.update_record("client", random_client['id'], updated_client)
+        self.record_manager.update_record(
+            "client", random_client['id'], updated_client)
 
         # Assert that save was called twice (once for adding, once for updating)
         self.assertEqual(mock_save.call_count, 2)
@@ -123,5 +126,98 @@ class TestRecordManager(unittest.TestCase):
         self.assertEqual(mock_save.call_count, 2)
         mock_save.assert_any_call()
 
+    @patch.object(RecordManager, 'save_records')
+    def test_add_flight(self, mock_save):
+        """Test adding a random flight record."""
+        # Generate random flight
+        random_flight = self.generate_random_flight()
+
+        # Add the random flight record
+        self.record_manager.add_record("flight", random_flight)
+
+        # Check that save was called once
+        self.assertEqual(mock_save.call_count, 1)
+        mock_save.assert_called_once()
+
+    @patch.object(RecordManager, 'save_records')
+    def test_update_flight(self, mock_save):
+        """Test updating a random flight record."""
+        # Add a random flight
+        random_flight = self.generate_random_flight()
+        self.record_manager.add_record("flight", random_flight)
+
+        # Update the flight with random new data
+        updated_flight = random_flight.copy()
+        updated_flight['departure'] = "Updated_" + random_flight['departure']
+        updated_flight['destination'] = "Updated_" + \
+            random_flight['destination']
+
+        self.record_manager.update_record(
+            "flight", random_flight['id'], updated_flight)
+
+        # Assert that save was called twice (once for adding, once for updating)
+        self.assertEqual(mock_save.call_count, 2)
+        mock_save.assert_any_call()
+
+    @patch.object(RecordManager, 'save_records')
+    def test_delete_flight(self, mock_save):
+        """Test deleting a random flight record."""
+        # Add a random flight
+        random_flight = self.generate_random_flight()
+        self.record_manager.add_record("flight", random_flight)
+
+        # Delete the random flight
+        self.record_manager.delete_record("flight", random_flight['id'])
+
+        # Assert that save was called twice (once for adding, once for deleting)
+        self.assertEqual(mock_save.call_count, 2)
+        mock_save.assert_any_call()
+
+    @patch.object(RecordManager, 'save_records')
+    def test_add_airline(self, mock_save):
+        """Test adding a random airline record."""
+        # Generate random airline
+        random_airline = self.generate_random_airline()
+
+        # Add the random airline record
+        self.record_manager.add_record("airline", random_airline)
+
+        # Check that save was called once
+        self.assertEqual(mock_save.call_count, 1)
+        mock_save.assert_called_once()
+
+    @patch.object(RecordManager, 'save_records')
+    def test_update_airline(self, mock_save):
+        """Test updating a random airline record."""
+        # Add a random airline
+        random_airline = self.generate_random_airline()
+        self.record_manager.add_record("airline", random_airline)
+
+        # Update the airline with random new data
+        updated_airline = random_airline.copy()
+        updated_airline['company_name'] = f"Updated_{random_airline['company_name']}"
+
+        self.record_manager.update_record(
+            "airline", random_airline['id'], updated_airline)
+
+        # Assert that save was called twice (once for adding, once for updating)
+        self.assertEqual(mock_save.call_count, 2)
+        mock_save.assert_any_call()
+
+    @patch.object(RecordManager, 'save_records')
+    def test_delete_airline(self, mock_save):
+        """Test deleting a random airline record."""
+        # Add a random airline
+        random_airline = self.generate_random_airline()
+        self.record_manager.add_record("airline", random_airline)
+
+        # Delete the random airline
+        self.record_manager.delete_record("airline", random_airline['id'])
+
+        # Assert that save was called twice (once for adding, once for deleting)
+        self.assertEqual(mock_save.call_count, 2)
+        mock_save.assert_any_call()
+
+
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(verbosity=2)
