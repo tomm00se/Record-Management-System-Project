@@ -32,7 +32,6 @@ from src.gui.pages.airlines import NewAirlineForm
 from src.gui.pages.airlines.edit_airlines import EditAirlinePage
 from src.gui.components.sidebar import Sidebar
 from src.data.record_manager import RecordManager
-from Foundation import NSBundle
 
 # Add the parent directory to the system path
 sys.path.append(abspath(join(dirname(__file__), '..')))
@@ -49,8 +48,8 @@ class RecordMgmtSystem:
         self.root.title("Record Management System")
         self.root.geometry("1280x768")
 
-        # Configure macOS-specific settings
-        self._configure_macos_settings()
+        # Configure platform-specific settings
+        self._configure_platform_settings()
 
         # Set application theme and color
         ctk.set_appearance_mode("light")
@@ -73,17 +72,36 @@ class RecordMgmtSystem:
         self.current_page = None
         self.show_page("flights")
 
-    def _configure_macos_settings(self):
-        """Configure macOS settings for the application."""
-        if sys.platform == "darwin":  # macOS
+    def _configure_platform_settings(self):
+        """Configure platform-specific settings for the application."""
+        try:
+            # Set application icon
+            if sys.platform == "darwin":  # macOS
+                # macOS specific settings
+                try:
+                    from Foundation import NSBundle
+                    bundle = NSBundle.mainBundle()
+                    info = bundle.localizedInfoDictionary() or bundle.infoDictionary()
+                    info['CFBundleName'] = "Record Management System"
+                except ImportError:
+                    pass
+
+            # Set icon for both Windows and macOS
             try:
-                bundle = NSBundle.mainBundle()
-                info = bundle.localizedInfoDictionary() or bundle.infoDictionary()
-                info['CFBundleName'] = "Record Management System"
-                icon = tk.PhotoImage(file="src/assets/rms.png")
-                self.root.iconphoto(True, icon)
-            except (ImportError, AttributeError) as e:
-                print(f"MacOS configuration error: {e}")
+                icon_path = "src/assets/rms.png"
+                if os.path.exists(icon_path):
+                    icon = tk.PhotoImage(file=icon_path)
+                    self.root.iconphoto(True, icon)
+            except Exception as e:
+                print(f"Icon loading error: {e}")
+
+            # Windows specific settings
+            if sys.platform == "win32":
+                self.root.state('zoomed')  # Start maximized on Windows
+
+        except Exception as e:
+            print(f"Platform configuration error: {e}")
+
 
     def create_menu(self):
         """
