@@ -24,7 +24,7 @@ class TestRecordMgmtSystem(unittest.TestCase):
         self.root = ctk.CTk()
         self.root.geometry("1280x768")
 
-        # 只保留必要嘅patches
+        # Patches
         self.patches = [
             patch('src.gui.record_gui3.RecordManager'),
             patch('src.gui.pages.flights.flights.FlightsPage'),
