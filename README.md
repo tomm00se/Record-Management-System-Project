@@ -1,5 +1,5 @@
-# Software Development In Practice End of the Module Group A Travel Agent Portal
-
+## Software Development In Practice (End of Module Assignment) 
+### [Group A] Travel Agent Portal <br/>
 A desktop application for a specialist travel agent to manage client, flight, and airline records for operation purpose.
 
 ## 📌 Project Description
