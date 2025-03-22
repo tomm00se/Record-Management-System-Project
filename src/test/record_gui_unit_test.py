@@ -13,7 +13,7 @@ import customtkinter as ctk
 project_root = abspath(join(dirname(__file__), '..', '..'))
 sys.path.append(project_root)
 
-from src.gui.record_gui3 import RecordMgmtSystem
+from src.gui.record_gui import RecordMgmtSystem
 
 
 class TestRecordMgmtSystem(unittest.TestCase):
