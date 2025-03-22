@@ -112,22 +112,22 @@ class DataTable:
 
     def setup_sorting(self):
         """Setup column sorting functionality"""
-        def sort_column(tv, col, reverse):
-            l = [(tv.set(k, col), k) for k in tv.get_children('')]
+        def sort_column(treeView, col, reverse):
+            list = [(treeView.set(k, col), k) for k in treeView.get_children('')] # L is a list
 
             try:
                 # Handle numeric sorting
                 if col in self.numeric_columns:
-                    l.sort(key=lambda t: float(
+                    list.sort(key=lambda t: float(
                         t[0]) if t[0] else 0, reverse=reverse)
                 else:
-                    l.sort(reverse=reverse)
+                    list.sort(reverse=reverse)
             except ValueError:
-                l.sort(reverse=reverse)
+                list.sort(reverse=reverse)
 
             # Rearrange items
             for index, (_, k) in enumerate(l):
-                tv.move(k, '', index)
+                treeView.move(k, '', index)
 
             # Update column headers with sort indicators
             for column in self.sort_columns:
@@ -145,12 +145,12 @@ class DataTable:
                     else:
                         indicator = ""
 
-                    tv.heading(column, text=original_text + indicator)
+                    treeView.heading(column, text=original_text + indicator)
 
             # Update click handler
-            tv.heading(
+            treeView.heading(
                 col,
-                command=lambda c=col: sort_column(tv, c, not reverse)
+                command=lambda c=col: sort_column(treeView, c, not reverse)
             )
 
         # Initialize sorting for sortable columns
