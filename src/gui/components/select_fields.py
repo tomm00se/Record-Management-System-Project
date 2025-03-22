@@ -1,8 +1,6 @@
 """
 Reusable components for selecting data in the application.
 """
-import customtkinter as ctk
-
 class SelectCountry:
     """Country selection component with predefined country list"""
 
@@ -19,6 +17,7 @@ class SelectCountry:
     @classmethod
     def create_field(cls, parent):
         """Create a country selection combobox"""
+        import customtkinter as ctk
 
         return ctk.CTkComboBox(
             parent,

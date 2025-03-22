@@ -17,12 +17,18 @@ class SidebarButton(ctk.CTkButton):
     def __init__(self, btnSideBar, text, icon, **kwargs):
         """
         Initialize the sidebar button with custom styling.
+
+        Args:
+            btnSideBar: Parent widget container
+            text (str): Button label text
+            icon (CTkImage): Button icon image
+            **kwargs: Additional keyword arguments for CTkButton
         """
         super().__init__(
-            btnSideBar, # Parent widget
-            text=text, # Button label text
-            image=icon,  # Button icon image
-            compound="top", # Icon image position
+            btnSideBar,
+            text=text,
+            image=icon,
+            compound="top",
             width=54,  # Fixed width
             height=54,  # Fixed height
             fg_color="transparent",  # No background
@@ -68,7 +74,7 @@ class Sidebar:
         """Create and configure the sidebar with navigation buttons."""
         self.sidebar = ctk.CTkFrame(
             self.parent,
-            width=74,
+            width=96,
             fg_color="#F6F6F6",
             corner_radius=0
         )

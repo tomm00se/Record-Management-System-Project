@@ -1,48 +1,43 @@
 """
 Flights Page Class
+
 Contains the Flights Records Table as the main content.
 """
+from tkinter import ttk
+import customtkinter as ctk
 from src.gui.pages.base import BasePage
-from src.gui.components.headers import PageHeader
 from src.gui.components.search import Search
-from src.gui.components.buttons import SingleButton
-from src.gui.components.table import DataTable
 from src.gui.components.utility import DateFormatter
 from src.data.record_manager import RecordManager
 
 class FlightsPage(BasePage):
     """ Flights Page Class """
-    # Intitiate Base Page
+
     def __init__(self, parent, navigation_callback, record_manager: RecordManager):
-        super().__init__(parent, navigation_callback)
+        super().__init__(parent, navigation_callback)  # Initialize the base page first
         self.record_manager = record_manager
 
-        # Initialize attributes
-        self.flights = [] #Flights List
-        self.table = None #Data Table
+        # Initialize attributes first
+        self.flights = []  # Initialize flights list
+        self.tree = None   # Initialize tree
 
-        # Create Header
-        self.header = PageHeader(
-            self.content_frame,
+        # Create page header using base method
+        self.create_header(
             title="Flights",
             description="Create, edit, or manage client travel details"
         )
 
-        # Add New Flight Button
-        new_flight_btn = SingleButton(
-            self.header.header_right,
-            text="+ New Flight",
-            command=self.on_new_flight_click
-        )
-        new_flight_btn.pack(side="right", pady=0)
-
-        # Initialize content
+        # Fetch data before creating content
         self.fetch_flights()
+
+        # Create main content
         self.setup_content()
+        
 
     def fetch_flights(self):
         """
-        Fetch flights data
+        Fetch flights data from your data source
+        For now, using sample data
         """
         try:
             self.flights = self.record_manager.records["flight"]
@@ -53,104 +48,173 @@ class FlightsPage(BasePage):
     def setup_content(self):
         """Setup the main content of the flights page"""
         try:
+            # Add New Flight Button
+            self.create_action_buttons()
+
             # Add Search Bar
             self.search_frame = Search(
                 self.content_frame,
                 search_placeholder="Search by Client Name",
                 search_callback=self.handle_search
             )
-            self.search_frame.pack(fill="x", padx=20, pady=(20, 5))
+            self.search_frame.pack(fill="x", padx=10, pady=(0, 10))
 
-            # Create and populate table
+            # Create Table
             self.create_flight_table()
+
+            # Populate the table with data
+            self.populate_table()
 
         except Exception as e:
             print(f"Error setting up content: {e}")
 
     def create_flight_table(self):
         """Create the flights table"""
-        # Define columns
-        columns = [
-            {"id": "id", "text": "ID", "width": 100},
-            {"id": "client", "text": "Client", "width": 150},
-            {"id": "airline", "text": "Airline", "width": 150},
-            {"id": "departure", "text": "From", "width": 150},
-            {"id": "destination", "text": "To", "width": 150},
-            {"id": "depart_date", "text": "Depart On", "width": 120},
-            {"id": "return_date", "text": "Return On", "width": 120},
-            {"id": "created_at", "text": "Created On", "width": 120},
-        ]
+        # Create a frame to hold both table and scrollbar
+        table_frame = ctk.CTkFrame(self.content_frame, fg_color="transparent")
+        table_frame.pack(fill="both", expand=True, padx=0, pady=0)
 
-        # Create table
-        self.table = DataTable(
-            parent=self.content_frame,
+        # Table Columns
+        columns = ("ID", "Client", "Airline", "From", "To",
+                   "Depart On", "Created On", "Action")
+
+        # Initialize and configure Treeview
+        self.tree = ttk.Treeview(
+            table_frame,
             columns=columns,
-            data=self.format_flight_data(),  # Initial data
-            on_row_click=self.handle_click,
-            on_double_click=self.on_row_double_click,
-            sort_columns=["id", "client", "airline", "departure", "destination", "depart_date", "return_date", "created_at"],
-            # Pass callback in action_column
-            action_column={"id": "action", "text": "Action", "callback": self.on_edit_click}
+            show="headings",
+            selectmode="browse"  # Single selection mode
         )
 
-        # Initial population
-        self.populate_table()
+        # Configure column headings and widths
+        for col in columns:
+            self.tree.heading(col, text=col)
+            if col == "Action":
+                self.tree.column(col, width=100, anchor="center")
+            else:
+                self.tree.column(col, width=150)
 
-    def format_flight_data(self, flights=None):
-        """Format flight data for table"""
-        flights_to_format = flights if flights is not None else self.flights
-        return [{
-            "id": flight["id"],
-            "client": flight["client"],
-            "airline": flight["airline"],
-            "departure": flight["departure"],
-            "destination": flight["destination"],
-            "depart_date": DateFormatter.to_display_format(flight["depart_date"]),
-            "return_date": DateFormatter.to_display_format(flight["return_date"]),
-            "created_at": DateFormatter.to_display_format(flight["created_at"]),
-            "action": "Edit"
-        } for flight in flights_to_format]
+        # Create scrollbar first
+        scrollbar = ttk.Scrollbar(
+            self.content_frame,
+            orient="vertical",
+            command=self.tree.yview
+        )
+        self.tree.configure(yscrollcommand=scrollbar.set)
 
-    def populate_table(self, filtered_data=None):
+        # Pack scrollbar and tree
+        scrollbar.pack(side="right", fill="y")
+        self.tree.pack(fill="both", expand=True, padx=10, pady=10)
+
+        # Bind double-click event
+        self.tree.bind('<Double-1>', self.on_row_double_click)
+
+        #Bind click event for the Action column
+        self.tree.bind('<Button-1>', self.handle_click)
+
+    def populate_table(self):
         """Populate table with flight data"""
-        formatted_data = self.format_flight_data(filtered_data)
-        self.table.populate(formatted_data)
+        # Clear existing items
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+
+        # Add data to table
+        for flight in self.flights:
+            formatted_created_at = DateFormatter.to_display_format(
+                flight["created_at"])
+
+            # Insert row with values
+            item_id = self.tree.insert("", "end", values=(
+                flight["id"],
+                flight["client"],
+                flight["airline"],
+                flight["departure"],
+                flight["destination"],
+                flight["depart_date"],
+                formatted_created_at,
+                "Edit"  # Using edit symbol instead of button
+            ))
+
+           # Bind click event for the Action column
+            self.tree.tag_bind(item_id, 'edit_action',
+                               lambda e, f=flight: self.on_edit_click(f))
 
     def handle_search(self, search_text):
         """Handle search callback from SearchFrame"""
         search_text = search_text.lower()
 
-        if not search_text:
-            # If search is empty, show all flights
-            self.populate_table()
-            return
+        # Clear existing items
+        for item in self.tree.get_children():
+            self.tree.delete(item)
 
-        # Filter flights based on search text
+        # Filter and display matching flights
         matched_flights = [
             flight for flight in self.flights
             if search_text in flight["client"].lower()
         ]
 
         if matched_flights:
-            self.populate_table(matched_flights)
+            for flight in matched_flights:
+                formatted_created_at = DateFormatter.to_display_format(
+                    flight["created_at"])
+
+                # Insert row
+                item_id = self.tree.insert("", "end", values=(
+                    flight["id"],
+                    flight["client"],
+                    flight["airline"],
+                    flight["departure"],
+                    flight["destination"],
+                    flight["depart_date"],
+                    formatted_created_at,
+                    "Edit"  # Simple text for edit action
+                ))
+
+                # Place button in the last column
+                self.tree.tag_bind(item_id, 'edit_action',
+                                   lambda e, f=flight: self.on_edit_click(f))
         else:
             # Show no results found
-            self.table.populate([{
-                "id": "",
-                "client": "No results found",
-                "airline": "",
-                "departure": "",
-                "destination": "",
-                "depart_date": "",
-                "return_date": "",
-                "created_at": "",
-                "action": ""
-            }])
+            self.tree.insert("", "end", values=(
+                "",
+                "No results found",
+            ))
+
+    # Helper Methods
+    def show_loading(self):
+        """Show loading indicator"""
+        self.loading_label = ctk.CTkLabel(
+            self.content_frame,
+            text="Loading...",
+            font=("Arial", 14)
+        )
+        self.loading_label.pack(pady=20)
+
+    def hide_loading(self):
+        """Hide loading indicator"""
+        if hasattr(self, 'loading_label'):
+            self.loading_label.destroy()
 
     def refresh_flights(self):
         """Refresh the flights table"""
         self.fetch_flights()
         self.populate_table()
+
+    # Button Actions
+    def create_action_buttons(self):
+        """Create action buttons like 'New Flight'"""
+        button_frame = ctk.CTkFrame(
+            self.content_frame,
+            fg_color="transparent"
+        )
+        button_frame.pack(fill="x", padx=10, pady=(0, 10))
+
+        new_flight_btn = ctk.CTkButton(
+            button_frame,
+            text="+ New Flight",
+            command=self.on_new_flight_click
+        )
+        new_flight_btn.pack(side="right")
 
     def on_new_flight_click(self):
         """Handle new flight button click"""
@@ -158,20 +222,21 @@ class FlightsPage(BasePage):
 
     def on_edit_click(self, flight):
         """Handle edit action"""
+        print(f"Editing flight: {flight['id']}")  # Debug print
+        # Pass the flight data as part of the route data
         self.navigation_callback({
             "route": "edit_flight",
             "data": flight
-        })
+    })
 
     def on_row_double_click(self, event):
         """Handle double-click on any row"""
-        item = self.table.tree.identify('item', event.x, event.y)
+        item = self.tree.identify('item', event.x, event.y)
         if item:
-            values = self.table.tree.item(item)['values']
+            values = self.tree.item(item)['values']
             if values:
                 flight = next(
-                    (f for f in self.flights if str(
-                        f["id"]) == str(values[0])),
+                    (f for f in self.flights if f["id"] == values[0]),
                     None
                 )
                 if flight:
@@ -180,23 +245,28 @@ class FlightsPage(BasePage):
                         "data": flight
                     })
 
+
     def handle_click(self, event):
         """Handle click events on the table"""
-        region = self.table.tree.identify("region", event.x, event.y)
+        region = self.tree.identify("region", event.x, event.y)
         if region == "cell":
-            column = self.table.tree.identify_column(event.x)
-            item = self.table.tree.identify_row(event.y)
+            column = self.tree.identify_column(event.x)
+            item = self.tree.identify_row(event.y)
 
-            # Check if click is in action column (last column)
-            if column == f"#{len(self.table.columns) + 1}":
-                values = self.table.tree.item(item)['values']
+        if region == "cell":
+            column = self.tree.identify_column(event.x)
+            item = self.tree.identify_row(event.y)
+
+            if column == "#8":  # Action column
+                values = self.tree.item(item)['values']
                 if values:
                     flight = next(
-                        (f for f in self.flights if str(
-                            f["id"]) == str(values[0])),
+                        (f for f in self.flights if f["id"] == values[0]),
                         None
                     )
                     if flight:
+                        print("DEBUG: Double-click on flight:",
+                              flight)  # Debug print
                         self.navigation_callback({
                             "route": "edit_flight",
                             "data": flight
