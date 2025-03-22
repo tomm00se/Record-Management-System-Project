@@ -1,12 +1,5 @@
 [
     {
-        "id": "A0001",
-        "type": "Airline",
-        "company_name": "Cathay Pacific Airways",
-        "country": "Hong Kong",
-        "created_at": "2025-03-01T00:00:00.00"
-    },
-    {
         "id": "A0002",
         "type": "Airline",
         "company_name": "British Airways",
@@ -19,5 +12,40 @@
         "country": "United Kingdom",
         "id": "A0003",
         "created_at": "2025-03-16T15:49:14.080348"
+    },
+    {
+        "id": "A0004",
+        "type": "Airline",
+        "company_name": "HK Express",
+        "country": "Hong Kong",
+        "created_at": "2025-03-16T15:49:14.080348"
+    },
+    {
+        "id": "A0005",
+        "type": "Airline",
+        "company_name": "Virgin Atlantic",
+        "country": "United Kingdom",
+        "created_at": "2025-03-16T15:49:14.080348"
+    },
+    {
+        "type": "Airline",
+        "company_name": "Qantas Airways",
+        "country": "Australia",
+        "id": "A0007",
+        "created_at": "2025-03-20T00:48:48.309308"
+    },
+    {
+        "id": "A0008",
+        "type": "Airline",
+        "company_name": "United Airlines",
+        "country": "Belgium",
+        "created_at": "2025-03-20T00:48:48.309308"
+    },
+    {
+        "id": "A0009",
+        "type": "Airline",
+        "company_name": "Cathay Pacific",
+        "country": "Hong Kong",
+        "created_at": "2025-03-20T01:53:46.934939"
     }
 ]

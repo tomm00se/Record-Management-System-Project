@@ -1,48 +1,32 @@
-""" Edit Flight Page Module """
+"""New Flight Form Module"""
 from tkinter import messagebox
 import customtkinter as ctk
 from src.gui.pages.base import BasePage
 from src.gui.components.headers import FormHeader
-from src.gui.components.buttons import FormButtons, DeleteButton
+from src.gui.components.buttons import FormButtons
 from src.gui.components.form import FormComponents
 from src.gui.components.utility import DateFormatter
 from src.data.record_manager import RecordManager
 
 
-class EditFlightPage(BasePage):
-    """ Edit Flight Page Class """
+class NewFlightForm(BasePage):
+    """New Flight Form Class"""
 
-    def __init__(self, parent, navigation_callback, record_manager: RecordManager, flight_data=None, **kwargs):
+    def __init__(self, parent, navigation_callback, record_manager: RecordManager, **kwargs):
         super().__init__(parent, navigation_callback, **kwargs)
         self.record_manager = record_manager
         self.form_components = FormComponents()
 
-        # Store flight data
-        self.flight_data = flight_data
-
-        # Create Header
-        self.header = FormHeader(
+        # Create header
+        FormHeader(
             self.content_frame,
-            title="Edit Flight",
-            description="Edit the travel details to update the flight record"
-        )
-        self.header.pack(fill="x", padx=20, pady=(20, 0))
-
-        # Create Delete Button Container
-        self.delete_container = ctk.CTkFrame(
-            self.content_frame, fg_color="transparent")
-        self.delete_container.pack(fill="x", padx=20, pady=0)
-        # Delete Flight Button
-        self.delete_button = DeleteButton(
-            self.delete_container,
-            delete_command=self.on_delete,
-            confirm_message="Are you sure you want to delete this record?"
+            title="Add New Flight",
+            description="Please select the client and enter the travel details to create the flight record"
         )
 
         # Form container
-        self.form_container = ctk.CTkFrame(
-            self.content_frame, fg_color="transparent")
-        self.form_container.pack(fill="x", padx=20, pady=0)
+        self.form_container = ctk.CTkFrame(self.content_frame, fg_color="transparent")
+        self.form_container.pack(fill="both", expand=True, padx=20, pady=(0, 20))
 
         # Create form
         self.create_form()
@@ -57,8 +41,6 @@ class EditFlightPage(BasePage):
             field_type="option",
             values=self.get_clients()
         )
-        self.client.pack(fill="x", pady=(0, 0))
-        self.client.set(self.flight_data["client"])
 
         # Airline Selection
         self.airline = self.form_components.create_form_row(
@@ -68,15 +50,12 @@ class EditFlightPage(BasePage):
             field_type="option",
             values=self.get_airlines()
         )
-        self.airline.pack(fill="x", pady=(0, 0))
-        self.airline.set(self.flight_data["airline"])
 
         # Cities Frame
-        cities_frame = ctk.CTkFrame(
-            self.form_container, fg_color="transparent")
+        cities_frame = ctk.CTkFrame(self.form_container, fg_color="transparent")
         cities_frame.pack(fill="x", pady=0)
 
-        # From City (Start City)
+        # From (Start City)
         from_frame = ctk.CTkFrame(cities_frame, fg_color="transparent")
         from_frame.pack(side="left", fill="x", expand=True, padx=(0, 10))
         self.from_city = self.form_components.create_form_row(
@@ -86,10 +65,8 @@ class EditFlightPage(BasePage):
             field_type="text",
             placeholder="Departure"
         )
-        self.from_city.pack(fill="x")
-        self.from_city.insert(0, self.flight_data["departure"])
 
-        # To City (End City)
+        # To (End City)
         to_frame = ctk.CTkFrame(cities_frame, fg_color="transparent")
         to_frame.pack(side="left", fill="x", expand=True)
         self.to_city = self.form_components.create_form_row(
@@ -99,12 +76,10 @@ class EditFlightPage(BasePage):
             field_type="text",
             placeholder="Destination"
         )
-        self.to_city.pack(fill="x")
-        self.to_city.insert(0, self.flight_data["destination"])
 
         # Dates Frame
         dates_frame = ctk.CTkFrame(self.form_container, fg_color="transparent")
-        dates_frame.pack(fill="x", pady=(0, 15))
+        dates_frame.pack(fill="x", pady=(0, 10))
 
         # Depart Date
         depart_frame = ctk.CTkFrame(dates_frame, fg_color="transparent")
@@ -116,9 +91,7 @@ class EditFlightPage(BasePage):
             field_type="date"
         )
         self.setup_date_field(self.depart_date)
-        self.depart_date.pack(fill="x")
-        self.depart_date.insert(0, self.flight_data["depart_date"])
-
+        
         # Return Date
         return_frame = ctk.CTkFrame(dates_frame, fg_color="transparent")
         return_frame.pack(side="left", fill="x", expand=True)
@@ -128,8 +101,6 @@ class EditFlightPage(BasePage):
             field_type="date"
         )
         self.setup_date_field(self.return_date)
-        self.return_date.pack(fill="x")
-        self.return_date.insert(0, self.flight_data["return_date"])
 
         # Action Buttons
         self.action_buttons = FormButtons(
@@ -137,18 +108,18 @@ class EditFlightPage(BasePage):
             cancel_command=self.on_cancel,
             save_command=self.on_save,
         )
-        self.action_buttons.pack(fill="x", pady=(20, 0))
+        self.action_buttons.pack(fill="x", pady=(10, 0))
 
     def get_clients(self) -> list[str]:
         """Get list of clients from the record manager"""
         clients = self.record_manager.records["client"]
-        return [client["name"] for client in clients]
+        return ["Please Select"] + [client["name"] for client in clients]
 
     def get_airlines(self) -> list[str]:
         """Get list of airlines from the record manager"""
         airlines = self.record_manager.records["airline"]
-        return [airline["company_name"] for airline
-                in airlines]
+        return ["Please Select"] + [airline["company_name"] for airline
+                                    in airlines]
 
     def create_field(self, parent, label, required=False):
         """Create form field label"""
@@ -158,18 +129,17 @@ class EditFlightPage(BasePage):
             text=label_text,
             font=("Arial", 13)
         ).pack(anchor="w", pady=(0, 5))
-
+        
     def setup_date_field(self, entry):
         """ Date Format """
-        entry.bind('<KeyRelease>',
-                   lambda event: DateFormatter.format_date_entry(entry))
+        entry.bind('<KeyRelease>', lambda event: DateFormatter.format_date_entry(entry))
 
     def validate_required_fields(self) -> tuple[bool, str]:
         """Validate all required fields are filled"""
-        if self.client.get() == "Please select":
+        if self.client.get() == "Please Select":
             return False, "Please select a client"
 
-        if self.airline.get() == "Please select":
+        if self.airline.get() == "Please Select":
             return False, "Please select an airline"
 
         if not self.from_city.get():
@@ -225,23 +195,13 @@ class EditFlightPage(BasePage):
             return
 
         new_flight = {
-            "id": self.flight_data["id"],
-            "type": "Flight",
             "client": self.client.get(),
             "airline": self.airline.get(),
             "departure": self.from_city.get(),
             "destination": self.to_city.get(),
-            "depart_date": self.depart_date.get(),
-            "return_date": self.return_date.get(),
-            "created_at": self.flight_data["created_at"]
+            "depart_date": depart_date,
+            "return_date": return_date
         }
 
-        self.record_manager.update_record(
-            "flight", new_flight["id"], new_flight)
-
-        self.navigation_callback("flights")
-
-    def on_delete(self):
-        """Handle delete button click"""
-        self.record_manager.delete_record("flight", self.flight_data["id"])
+        self.record_manager.add_record("flight", new_flight)
         self.navigation_callback("flights")
