@@ -6,6 +6,12 @@ A desktop application for a specialist travel agent to manage client, flight, an
 
 ## 📌 Project Description
 
+### Operating Systems
+
+Due to the technical limitations of the team engineering this Travel Agent Portal, we are unable to develop for Windows 10 & 11.
+
+This desktop application runs on MacOS.
+
 ### System Structure
 
 ```bash
