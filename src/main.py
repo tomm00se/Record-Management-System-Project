@@ -7,7 +7,7 @@ from pathlib import Path
 project_root = str(Path(__file__).parent.parent)
 sys.path.append(project_root)
 
-from src.gui.record_gui3 import RecordMgmtSystem
+from src.gui.record_gui import RecordMgmtSystem
 
 def main():
     """Create and start application"""
