@@ -26,7 +26,7 @@ class TestRecordMgmtSystem(unittest.TestCase):
 
         # Patches
         self.patches = [
-            patch('src.gui.record_gui3.RecordManager'),
+            patch('src.gui.record_gui.RecordManager'),
             patch('src.gui.pages.flights.flights.FlightsPage'),
             patch('src.gui.pages.clients.clients.ClientsPage'),
             patch('src.gui.pages.airlines.AirlinesPage')
@@ -55,7 +55,7 @@ class TestRecordMgmtSystem(unittest.TestCase):
 
     def test_platform_configuration(self):
         """Test Platform-Specific Settings"""
-        with patch('src.gui.record_gui3.sys.platform') as mock_platform:
+        with patch('src.gui.record_gui.sys.platform') as mock_platform:
             # Test Windows configuration
             mock_platform.return_value = 'win32'
             self.app._configure_platform_settings()
