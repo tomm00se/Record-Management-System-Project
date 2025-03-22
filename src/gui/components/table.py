@@ -126,7 +126,7 @@ class DataTable:
                 list.sort(reverse=reverse)
 
             # Rearrange items
-            for index, (_, k) in enumerate(l):
+            for index, (_, k) in enumerate(list):
                 treeView.move(k, '', index)
 
             # Update column headers with sort indicators
