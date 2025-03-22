@@ -1,116 +1,193 @@
+"""
+Record Management System GUI
+
+This module implements a graphical user interface for a Record Management System.
+The application is built using CustomTkinter and consists of three main components:
+
+1. Sidebar: Navigation panel with buttons for different sections
+2. Search Bar: Interface for searching records
+3. Main Frame: Display area for all content (e.g., tables, forms, etc.)
+
+Classes:
+    - SidebarButton: Custom button widget for sidebar navigation
+    - RecordManagementSystem: Main application class handling the GUI layout
+
+Version: 1.0
+
+Created Date: 16 March 2025
+"""
 import sys
+import os
 from os.path import dirname, abspath, join
 import tkinter as tk
-from tkinter import messagebox
-import json
+import customtkinter as ctk
+from src.gui.pages.flights import FlightsPage
+from src.gui.pages.flights import NewFlightForm
+from src.gui.pages.flights import EditFlightPage
+from src.gui.pages.clients.clients import ClientsPage
+from src.gui.pages.clients.add_new_client import NewClientForm
+from src.gui.pages.clients.edit_clients import EditClientPage
+from src.gui.pages.airlines import AirlinesPage
+from src.gui.pages.airlines import NewAirlineForm
+from src.gui.pages.airlines.edit_airlines import EditAirlinePage
+from src.gui.components.sidebar import Sidebar
+from src.data.record_manager import RecordManager
 
 # Add the parent directory to the system path
 sys.path.append(abspath(join(dirname(__file__), '..')))
 
-from data.record_manager import RecordManager
+class RecordMgmtSystem:
+    """
+    Main application class for the Record Management System.
 
-class RecordManagerGUI:
+    This class handles the creation and management of the main GUI components
+    including the sidebar, main content area, and data displays.
+    """
     def __init__(self, root):
         self.root = root
-        self.root.title("Record Manager")
+        self.root.title("Record Management System")
+        self.root.geometry("1280x768")
 
+        # Configure platform-specific settings
+        self._configure_platform_settings()
+
+        # Set application theme and color
+        ctk.set_appearance_mode("light")
+        ctk.set_default_color_theme("blue")
+        
         self.record_manager = RecordManager(data_folder="src/record", file_format="json")
-
-        # Create widgets
-        self.record_type_label = tk.Label(root, text="Record Type:")
-        self.record_type_label.grid(row=0, column=0)
-        self.record_type_entry = tk.Entry(root)
-        self.record_type_entry.grid(row=0, column=1)
-
-        self.record_data_label = tk.Label(root, text="Record Data (JSON):")
-        self.record_data_label.grid(row=1, column=0)
-        self.record_data_entry = tk.Entry(root)
-        self.record_data_entry.grid(row=1, column=1)
-
-        self.add_button = tk.Button(root, text="Add Record", command=self.add_record)
-        self.add_button.grid(row=2, column=0, columnspan=2)
         
-        self.update_button = tk.Button(root, text="Update Record", command=self.update_record)
-        self.update_button.grid(row=5, column=0, columnspan=2)
+        # Initialize GUI components
+        self.create_menu()
 
-        self.records_listbox = tk.Listbox(root)
-        self.records_listbox.grid(row=3, column=0, columnspan=2)
-
-        self.delete_button = tk.Button(root, text="Delete Record", command=self.delete_record)
-        self.delete_button.grid(row=4, column=0, columnspan=2)
-
-        self.records_id_array = []
+        # Create main content area
+        self.main_content = ctk.CTkFrame(self.root)
+        self.main_content.pack(side="right", fill="both", expand=True)
         
-        self.load_records()
-        print(self.record_manager.records)
-        print(self.records_id_array)
+        # Initialize the sidebar with navigation callback
+        self.sidebar = Sidebar(self.main_content, self.handle_navigation)
+        self.sidebar.on_navigate = self.handle_navigation  # Set navigation callback
 
-    def load_records(self):
-        self.records_listbox.delete(0, tk.END)
-        self.records_id_array = []
-        for record_type in self.record_manager.RECORD_TYPES:
-            for record in self.record_manager.records[record_type]:
-                self.records_id_array.append(record_type + ':' + record['id'])
-                self.records_listbox.insert(tk.END, f"{record_type}: {record}")
+        # Show default page (Flights)
+        self.current_page = None
+        self.show_page("flights")
 
-    def add_record(self):
-        record_type = self.record_type_entry.get()
-        record_data = self.record_data_entry.get()
-
-        if record_type not in self.record_manager.RECORD_TYPES:
-            messagebox.showerror("Error", f"Record type '{record_type}' is not supported.")
-            return
-
+    def _configure_platform_settings(self):
+        """Configure platform-specific settings for the application."""
         try:
-            record = json.loads(record_data)
-            self.record_manager.add_records(record_type, [record])
-            self.load_records()
-        except json.JSONDecodeError:
-            messagebox.showerror("Error", "Invalid JSON data.")
+            # Set application icon
+            if sys.platform == "darwin":  # macOS
+                # macOS specific settings
+                try:
+                    from Foundation import NSBundle
+                    bundle = NSBundle.mainBundle()
+                    info = bundle.localizedInfoDictionary() or bundle.infoDictionary()
+                    info['CFBundleName'] = "Record Management System"
+                except ImportError:
+                    pass
+
+            # Set icon for both Windows and macOS
+            try:
+                icon_path = "src/assets/rms.png"
+                if os.path.exists(icon_path):
+                    icon = tk.PhotoImage(file=icon_path)
+                    self.root.iconphoto(True, icon)
+            except Exception as e:
+                print(f"Icon loading error: {e}")
+
+            # Windows specific settings
+            if sys.platform == "win32":
+                self.root.state('zoomed')  # Start maximized on Windows
+
+        except Exception as e:
+            print(f"Platform configuration error: {e}")
+
+
+    def create_menu(self):
+        """
+        Create and configure the application's main menu bar.
+    
+        Creates a menu bar with 'File' menu containing options for:
+        - Restart: Restarts the application
+        - Exit: Closes the application
+        """        
+        menubar = tk.Menu(self.root)
+        self.root.config(menu=menubar)
+
+        # File menu
+        file_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="File", menu=file_menu)
+        file_menu.add_command(label="Restart", command=self.restart_app)
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=self.root.quit)
+
+    def restart_app(self):
+        """
+         Restart the application by re-executing the current process.
+
+         This method terminates the current instance and starts a fresh instance
+         of the application using the same arguments it was initially launched with.
+        """
+        python = sys.executable
+        os.execl(python, python, *sys.argv)
+
+    def handle_navigation(self, page_name):
+        """Handle navigation between pages"""
+        self.show_page(page_name)
+
+    def show_page(self, page_name):
+        """Show the selected page"""
+        # Clear current page if exists
+        if self.current_page:
+            self.current_page.destroy()
             
-    def update_record(self):
-        selected = self.records_listbox.curselection()
-        if not selected:
-            messagebox.showerror("Error", "No record selected.")
-            return
+        record_data = None
+        if isinstance(page_name, dict):
+            record_data = page_name.get('data')
+            page_name = page_name.get('route')
 
-        record_type = self.record_type_entry.get()
-        record_data = self.record_data_entry.get()
+        # Show new page
+        if page_name == "flights":
+            self.current_page = FlightsPage(
+                self.main_content, self.handle_navigation, self.record_manager)
+        elif page_name == "add_new_flight":
+            self.current_page = NewFlightForm(
+                self.main_content, self.handle_navigation, self.record_manager)
+        elif page_name == "edit_flight":
+            self.current_page = EditFlightPage(
+                self.main_content, self.handle_navigation, self.record_manager, record_data)
+        elif page_name == "clients":
+            self.current_page = ClientsPage(
+                self.main_content, self.handle_navigation, self.record_manager)
+        elif page_name == "add_new_client":
+            self.current_page = NewClientForm(
+                self.main_content, self.handle_navigation, self.record_manager)
+        elif page_name == "edit_client":
+            self.current_page = EditClientPage(
+                self.main_content, self.handle_navigation, self.record_manager, record_data)
+        elif page_name == "airlines":
+            self.current_page = AirlinesPage(
+                self.main_content, self.handle_navigation, self.record_manager)
+        elif page_name == "add_new_airline":
+            self.current_page = NewAirlineForm(
+                self.main_content, self.handle_navigation, self.record_manager)
+        elif page_name == "edit_airline":
+            self.current_page = EditAirlinePage(
+                self.main_content, self.handle_navigation, self.record_manager, record_data)
 
-        if record_type not in self.record_manager.RECORD_TYPES:
-            messagebox.showerror("Error", f"Record type '{record_type}' is not supported.")
-            return
 
-        try:
-            updated_record = json.loads(record_data)
-            record_id = self.records_id_array[selected[0]].split(":", 1)[1]
-            self.record_manager.update_record(record_type, int(record_id), updated_record)
-            self.load_records()
-        except json.JSONDecodeError:
-            messagebox.showerror("Error", "Invalid JSON data.")
-        except ValueError as e:
-            messagebox.showerror("Error", str(e))
+        self.current_page.pack(fill="both", expand=True)
 
-    def delete_record(self):
-        selected = self.records_listbox.curselection()
-        if not selected:
-            messagebox.showerror("Error", "No record selected.")
-            return
-        
-        print(selected)
-        
-        selected_index = selected[0]
-        
-        print(selected_index)
-        print(self.records_id_array)
-        
-        # record type and record id are separated by a colon in the records_id_array
-        record_type, record_id = self.records_id_array[selected_index].split(":", 1)
-        
-        self.record_manager.delete_records(record_type, record_id)
-        self.load_records()
+    def run(self):
+        """
+        Start the application's main event loop.
+    
+        This method initiates the GUI application and handles all user interactions
+        until the application is closed.
+        """
+        self.root.mainloop()
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = RecordManagerGUI(root)
+    root = ctk.CTk()
+    app = RecordMgmtSystem(root)
     root.mainloop()
