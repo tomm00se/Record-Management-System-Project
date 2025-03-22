@@ -42,8 +42,6 @@ class RecordManagerGUI:
         self.records_id_array = []
         
         self.load_records()
-        print(self.record_manager.records)
-        print(self.records_id_array)
 
     def load_records(self):
         self.records_listbox.delete(0, tk.END)
@@ -97,12 +95,7 @@ class RecordManagerGUI:
             messagebox.showerror("Error", "No record selected.")
             return
         
-        print(selected)
-        
         selected_index = selected[0]
-        
-        print(selected_index)
-        print(self.records_id_array)
         
         # record type and record id are separated by a colon in the records_id_array
         record_type, record_id = self.records_id_array[selected_index].split(":", 1)
