@@ -1,5 +1,11 @@
-import unittest
+import sys
 import os
+from os.path import dirname, abspath, join
+# Add the project root directory to Python path
+project_root = abspath(join(dirname(__file__), '..', '..'))
+sys.path.append(project_root)
+
+import unittest
 import json
 import pickle
 import shutil  # Import shutil to remove the test folder
@@ -38,4 +44,4 @@ class TestRecordManager(unittest.TestCase):
         self.assertEqual(self.manager._get_file_path("client"), expected_path)
 
 if __name__ == "__main__":
-    unittest
+    unittest.main()
