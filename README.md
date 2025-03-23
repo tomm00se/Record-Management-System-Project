@@ -127,7 +127,7 @@ python -m unittest src/test/data_test.py -v
 #### GUI Test
 
 ```bash
-python -m unittest src/test/record_gui3_unit_test.py -v
+python -m unittest src/test/record_gui_unit_test.py -v
 ```
 
 ### 🏃‍♂️ Run the Performance Test
