@@ -6,6 +6,10 @@ A desktop application for a specialist travel agent to manage client, flight, an
 
 ## 📌 Project Description
 
+### Operating Systems
+
+The MVP of the Travel Agent Portal is currently developed as a desktop application for MacOS only, with future plans to support Windows 10 and 11.
+
 ### System Structure
 
 ```bash
@@ -28,25 +32,25 @@ The repository supports the following:
 
 - An intuitive interface for easy interaction
 
-#### 💾 Persistent Storage**
+#### 💾 Persistent Storage
 
 - Supports binary storage (using **Pickle**), **JSON**, or **JSON Lines (JSONL)** for data persistence
 
-#### 📂 Data Management**
+#### 📂 Data Management
 
 - Supports **CRUD operations** (Create, Read, Update, Delete)
 - **In-memory** data storage
 - **RecordManager:** Custom record management system
 
-#### 🔄 Automatic Save & Load**
+#### 🔄 Automatic Save & Load
 
 - Records are saved **automatically** upon application closure and loaded on startup
 
-#### ✅ Unit Tests**
+#### ✅ Unit Tests
 
 - Ensures the application functions as expected with **automatic tests**
 
-#### ✅ Performance Test**
+#### ✅ Performance Test
 
 - Ensures the application loaded, updated and deleted records in a reasonable time
 
@@ -111,13 +115,19 @@ python src/main.py
 #### Backend Operation Test
 
 ```bash
-python -m unittest src/test/data_test.py -v
+python -m unittest src/test/record_manager_unit_test.py -v
 ```
 
 #### GUI Test
 
 ```bash
-python -m unittest src/test/record_gui3_unit_test.py -v
+python -m unittest src/test/record_gui_unit_test.py -v
+```
+
+### 🏃‍♂️ Run the Data Test
+
+```bash
+python -m unittest src/test/data_test.py -v
 ```
 
 ### 🏃‍♂️ Run the Performance Test
