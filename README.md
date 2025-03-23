@@ -8,7 +8,7 @@ A desktop application for a specialist travel agent to manage client, flight, an
 
 ### Operating Systems
 
-The MVP of the Travel Agent Portal is currently designed exclusively as a desktop application for macOS, with future plans to support Windows 10 and 11.
+The MVP of the Travel Agent Portal is currently developed as a desktop application for macOS, with future plans to support Windows 10 and 11.
 
 ### System Structure
 
