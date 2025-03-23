@@ -8,9 +8,7 @@ A desktop application for a specialist travel agent to manage client, flight, an
 
 ### Operating Systems
 
-Due to the technical limitations of the team engineering this Travel Agent Portal, we are unable to develop for Windows 10 & 11.
-
-This desktop application runs on MacOS.
+To align with the constraints set for the Minimum Viable Product (MVP), this Travel Agent Portal is currently developed exclusively for MacOS, with support for Windows 10 and 11 planned for future iterations.
 
 ### System Structure
 
@@ -115,6 +113,12 @@ python src/main.py
 ### 🏃‍♂️ Run the Unit Tests
 
 #### Backend Operation Test
+
+```bash
+python -m unittest src/test/record_manager_unit_test.py -v
+```
+
+#### Data Test
 
 ```bash
 python -m unittest src/test/data_test.py -v
