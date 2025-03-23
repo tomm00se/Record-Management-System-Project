@@ -32,25 +32,25 @@ The repository supports the following:
 
 - An intuitive interface for easy interaction
 
-#### 💾 Persistent Storage**
+#### 💾 Persistent Storage
 
 - Supports binary storage (using **Pickle**), **JSON**, or **JSON Lines (JSONL)** for data persistence
 
-#### 📂 Data Management**
+#### 📂 Data Management
 
 - Supports **CRUD operations** (Create, Read, Update, Delete)
 - **In-memory** data storage
 - **RecordManager:** Custom record management system
 
-#### 🔄 Automatic Save & Load**
+#### 🔄 Automatic Save & Load
 
 - Records are saved **automatically** upon application closure and loaded on startup
 
-#### ✅ Unit Tests**
+#### ✅ Unit Tests
 
 - Ensures the application functions as expected with **automatic tests**
 
-#### ✅ Performance Test**
+#### ✅ Performance Test
 
 - Ensures the application loaded, updated and deleted records in a reasonable time
 
